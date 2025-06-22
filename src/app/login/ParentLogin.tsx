@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { FaEye, FaEyeSlash, FaHeart, FaUserPlus } from "react-icons/fa";
-import ParentRegistration from "./ParentRegistration";
+// import ParentRegistration from "../registration/ParentRegistrationForm";
 
 type FormData = {
   email: string;
@@ -24,9 +24,7 @@ export default function ParentLogin() {
     // Connect to backend here
   };
 
-  if (showRegistration) {
-    return <ParentRegistration onBack={() => setShowRegistration(false)} />;
-  }
+ 
 
   return (
     <div className="flex items-center justify-center min-h-[80vh]">
