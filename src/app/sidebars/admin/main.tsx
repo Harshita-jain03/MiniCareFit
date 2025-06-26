@@ -1,26 +1,20 @@
+import BaseMenuItem, { MenuItemConfig } from "../baseItem";
+import { FaTachometerAlt, FaUser, FaTasks } from "react-icons/fa";
 
+const adminMenu: MenuItemConfig[] = [
+  { label: "Dashboard", href: "/dashboard/admin", icon: <FaTachometerAlt /> },
+  { label: "Students", href: "/dashboard/admin/students", icon: <FaUser /> },
+  { label: "To-Do List", href: "/dashboard/admin/to-do-list", icon: <FaTasks /> },
+  {label:"account",href:"/admin/account",icon:<FaTasks/>}
+];
 
-
-// // import MenuItemRenderer, { MenuItemConfig } from '@/app/(internal)/components/sidebar/baseItem';
-// // import student from './student';
-// // import exams from './exams';
-
-
-
-
-
-
-// const courseManagementItems: MenuItemConfig = {
-//     label: 'Course Management',
-//     // children: [ exams , course],
-   
-// };
-
-// const UserManagement = () => {
-//     return <MenuItemRenderer
-//         item={courseManagementItems}
-        
-//     />;
-// };
-
-// export default UserManagement;
+export default function AdminSidebar() {
+  return (
+    <div className="w-64 bg-gray-900 text-white p-4 min-h-screen space-y-4">
+      <h2 className="text-2xl font-bold text-blue-400 mb-6">Admin</h2>
+      {adminMenu.map((item, index) => (
+        <BaseMenuItem key={index} item={item} />
+      ))}
+    </div>
+  );
+}
