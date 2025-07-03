@@ -18,10 +18,10 @@ type ClientConfig = {
 // Dummy data for development
 const dummyProfile: ParentProfile = {
   id: "parent_123",
-  name: "Sarah Johnson",
-  email: "sarah.johnson@email.com",
+  name: "Reshma K",
+  email: "reshma.k@email.com",
   phone: "+1 (555) 123-4567",
-  children: ["Emma Johnson", "Liam Johnson", "Olivia Johnson"],
+  children: ["Emma K", "Liam K", "Olivia K"],
   profilePicture: "https://images.unsplash.com/photo-1494790108755-2616b612b586?w=150&h=150&fit=crop&crop=face",
   statistics: {
     totalTasks: 87,

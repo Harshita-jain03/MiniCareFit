@@ -7,7 +7,7 @@ export default function Header() {
         <h1 className="text-2xl font-bold text-gray-900">Parent Dashboard</h1>
         <div className="flex items-center space-x-3">
           <div className="text-right">
-            <p className="text-sm font-medium text-gray-900">John Doe</p>
+            <p className="text-sm font-medium text-gray-900">Reshma</p>
             <p className="text-xs text-gray-500">Parent</p>
           </div>
           <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
