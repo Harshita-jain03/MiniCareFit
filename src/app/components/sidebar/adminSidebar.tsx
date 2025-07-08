@@ -1,9 +1,10 @@
-import BaseMenuItem, { MenuItemConfig } from "../baseItem";
+ 
 import { FaTachometerAlt, FaUser, FaTasks } from "react-icons/fa";
+import BaseMenuItem, {MenuItemConfig} from "../ui/baseMenuItem";
 
 const adminMenu: MenuItemConfig[] = [
   { label: "Dashboard", href: "/dashboard/admin", icon: <FaTachometerAlt /> },
-  { label: "Students", href: "/dashboard/admin/students", icon: <FaUser /> },
+  { label: "Students", href: "/dashboard/admin/student", icon: <FaUser /> },
   { label: "To-Do List", href: "/dashboard/admin/to-do-list", icon: <FaTasks /> },
   {label:"account",href:"/admin/account",icon:<FaTasks/>}
 ];

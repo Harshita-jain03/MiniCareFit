@@ -214,7 +214,7 @@ const BaseTable = forwardRef(({
         </button>
 
         <select
-          className="border rounded px-2 py-1 ml-2"
+          className="border rounded px-2 py-1 ml-2 text-black"
           value={pageSize}
           onChange={(e) => {
             setPageSize(Number(e.target.value));
@@ -280,19 +280,19 @@ const BaseTable = forwardRef(({
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-500 rounded disabled text-black"
             >
               Previous
             </button>
 
-            <span className="text-sm">
+            <span className="px-3 py-1 text-sm bg-blue rounded text-black">
               Page {currentPage} of {Math.max(1, Math.ceil(totalCount / pageSize))}
             </span>
 
             <button
               disabled={currentPage >= Math.ceil(totalCount / pageSize)}
               onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              className="px-3 py-1 bg-blue-500 rounded disabled text-black"
             >
               Next
             </button>

@@ -1,19 +1,19 @@
 // src/app/dashboard/admin/layout.tsx
 import AppHeader from "../../_container/AppHeader";
-import AdminSidebar from "../../sidebars/admin/main";
-import AdminDashboardPage from "../../sidebars/admin/dashboard";
-import SummaryCard from "../../components/sidebar/admin/summaryCard";
+import ChildSidebar from "../../components/sidebar/childSidebar";
+// import AdminDashboardPage from "../../sidebars/admin/dashboard";
+// import AdminDashboardPage from "./page";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen">
-      <AppHeader role="Admin" />
+      <AppHeader role="Child" />
       <div className="flex">
-        <AdminSidebar />
+        <ChildSidebar />
         <main className="flex-1 p-6 bg-white">{children}</main>
       </div>
       <div>
-        <AdminDashboardPage/>
+        {/* <AdminDashboardPage/> */}
       </div>
       
 
