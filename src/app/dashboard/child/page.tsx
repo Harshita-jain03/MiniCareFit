@@ -2,7 +2,7 @@
 
 import SummaryCard from "../../dashboardSections/childSummaryCard";// adjust path if no alias
 
-export default function AdminDashboardPage() {
+export default function ChildDashboardPage() {
   return (
     <div className="space-y-6">
       <SummaryCard />
