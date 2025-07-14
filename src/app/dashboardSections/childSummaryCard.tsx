@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function Dashboard() {
+export default function SummaryCard() {
   const [balance, setBalance] = useState(300);
   const [motivationIndex, setMotivationIndex] = useState(0);
 

@@ -4,7 +4,7 @@ import ChildSidebar from "../../components/sidebar/childSidebar";
 // import AdminDashboardPage from "../../sidebars/admin/dashboard";
 // import AdminDashboardPage from "./page";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function ChildLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen">
       <AppHeader role="Child" />
