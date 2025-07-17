@@ -1,19 +1,6 @@
 "use server";
 
-import clientConfig from "@/clientConfig.json";
 import type { ParentProfile, UpdateProfileRequest, ApiResponse } from './types';
-
-type ClientConfig = {
-  [key: string]: {
-    productId: number;
-    clientName: string;
-    key: string;
-    domain: string[];
-    botName: string;
-  }[];
-};
-
-const typedConfig = clientConfig as ClientConfig;
 
 const dummyProfile: ParentProfile = {
   id: "parent_123",
@@ -212,18 +199,5 @@ export async function changePassword(currentPassword: string, newPassword: strin
   } catch (error) {
     console.error('Error changing password:', error);
     return false;
-  }
-}
-
-export async function getClientConfig(name: string) {
-  try {
-    const clientData = typedConfig[name]?.[0];
-    return {
-      productId: clientData.productId,
-      botName: clientData.botName,
-    };
-  } catch (error) {
-    console.error('Error getting client config:', error);
-    return null;
   }
 }

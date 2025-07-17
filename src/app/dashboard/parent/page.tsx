@@ -1,6 +1,5 @@
 
 import SummaryCard from "../../dashboardSections/parentSummaryCard"; // adjust path if needed
-import { UserIcon } from "lucide-react"; // or any icon you prefer
 
 export default function ParentDashboardPage() {
   return (
