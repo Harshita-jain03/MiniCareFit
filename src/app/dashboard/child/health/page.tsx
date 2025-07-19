@@ -14,8 +14,12 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-// import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+
+type FoodEntry = {
+  food: string;
+  mealType: string;
+  quantity: string;
+};
 
 // Dummy data
 const barData = [
@@ -35,60 +39,81 @@ const lineData = [
 
 export default function HealthPage() {
   const [showSummary, setShowSummary] = useState(false);
+  const [foodItems, setFoodItems] = useState<FoodEntry[]>([]);
+
+  const handleAddFood = (item: FoodEntry) => {
+    setFoodItems((prev) => [...prev, item]);
+  };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <main className="flex-1 p-6 space-y-6">
+    <div className="flex min-h-screen bg-gray-50">
+      <main className="flex-1 p-6 space-y-8">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-blue-600">
-            {showSummary ? "Weekly Health Summary" : "Health Dashboard"}
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-blue-700">
+            {showSummary ? "📊 Weekly Health Summary" : "🩺 Health Dashboard"}
           </h1>
           <button
             onClick={() => setShowSummary(!showSummary)}
-            className="bg-blue-600 text-white px-4 py-2 rounded font-medium"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md font-medium transition"
           >
-            {showSummary ? "Back to Dashboard" : "View Summary"}
+            {showSummary ? "⬅ Back to Dashboard" : "📈 View Summary"}
           </button>
         </div>
 
         {/* Main View */}
         {!showSummary ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FoodForm />
-              <FoodTable />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left: Form */}
+              <div className="bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">
+                  🍽️ Log Your Meal
+                </h2>
+                <FoodForm onAddFood={handleAddFood} />
+              </div>
+
+              {/* Right: Table */}
+              <div className="bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">
+                  📋 Food Items Added
+                </h2>
+                <FoodTable items={foodItems} />
+              </div>
             </div>
           </>
         ) : (
-          <div className="space-y-6">
-            {/* Motivational Message */}
-            <p className="text-gray-700 text-lg text-center">
-              💪 Great work tracking your nutrition this week!
-            </p>
+          <div className="space-y-8">
+            {/* Motivation */}
+            <div className="text-center">
+              <p className="text-xl font-semibold text-gray-700">
+                💪 Great job tracking your nutrition this week!
+              </p>
+            </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 rounded shadow text-center">
-                <p className="text-sm">Total Calories</p>
-                <p className="text-2xl font-bold text-white">2,650</p>
-              </div>
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 rounded shadow text-center">
-                <p className="text-sm">Total Protein</p>
-                <p className="text-2xl font-bold text-white">180 g</p>
-              </div>
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 rounded shadow text-center">
-                <p className="text-sm">Total Carbohydrates</p>
-                <p className="text-2xl font-bold text-white">320 g</p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { label: "Total Calories", value: "2,650", emoji: "🔥" },
+                { label: "Total Protein", value: "180 g", emoji: "🥩" },
+                { label: "Total Carbohydrates", value: "320 g", emoji: "🍞" },
+              ].map((card, i) => (
+                <div
+                  key={i}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 p-5 rounded-xl shadow text-center text-white"
+                >
+                  <p className="text-sm">{card.emoji} {card.label}</p>
+                  <p className="text-2xl font-bold mt-1">{card.value}</p>
+                </div>
+              ))}
             </div>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Bar Chart */}
-              <div className="bg-white rounded-xl shadow p-4">
-                <h2 className="text-lg text-blue-600 font-semibold mb-2">
-                  Top Food Items
+              <div className="bg-white rounded-xl shadow p-6">
+                <h2 className="text-lg text-blue-600 font-semibold mb-4">
+                  🍔 Top Food Items
                 </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={barData}>
@@ -101,9 +126,9 @@ export default function HealthPage() {
               </div>
 
               {/* Line Chart */}
-              <div className="bg-white rounded-xl shadow p-4">
-                <h2 className="text-lg text-blue-600 font-semibold mb-2">
-                  Weekly Calories Progress
+              <div className="bg-white rounded-xl shadow p-6">
+                <h2 className="text-lg text-blue-600 font-semibold mb-4">
+                  📆 Weekly Calories Progress
                 </h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={lineData}>
