@@ -31,7 +31,7 @@ export default function SplashScreen() {
         Welcome to MiniCareFit
       </h1>
       <p className="text-lg md:text-xl text-gray-700 mb-10 text-center">
-        Join us your way — register as a Parent, Child, or Admin!
+        Join us your way — Login as a Parent, Child, or Admin!
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
