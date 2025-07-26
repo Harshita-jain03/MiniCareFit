@@ -1,24 +1,15 @@
-// src/lib/api/server.ts
-const BASE_URL = process.env.INTERNAL_API_URL || "http://localhost:8000/api";
+// src/lib/auth/server.ts
 
-export const serverApi = async (
-  endpoint: string,
+export async function fetchWithTokenRetry(
+  url: string,
   options: RequestInit = {}
-) => {
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Server API error");
+): Promise<{ data: any; status: number }> {
+  try {
+    const res = await fetch(url, options);
+    const data = await res.json().catch(() => ({}));
+    return { data, status: res.status };
+  } catch (error) {
+    console.error("[fetchWithTokenRetry] Server fetch failed:", error);
+    return { data: { error: "Server error" }, status: 500 };
   }
-
-  return data;
-};
+}

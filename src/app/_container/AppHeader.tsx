@@ -3,14 +3,14 @@ import { useRouter } from "next/navigation";
 import { FaHeart, FaSignOutAlt } from "react-icons/fa";
 
 interface AppHeaderProps {
-  role: "Admin" | "Parent" | "Child";
+  role: "Teacher" | "Parent" | "Child";
 }
 
 export default function AppHeader({ role }: AppHeaderProps) {
   const router = useRouter();
 
   const roleEmojis: Record<string, string> = {
-    Admin: "🛡️",
+    Teacher: "🛡️",
     Parent: "👨‍👩‍👧‍👦",
     Child: "🎮",
   };

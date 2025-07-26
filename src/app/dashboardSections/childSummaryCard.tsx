@@ -114,7 +114,7 @@ export default function SummaryCard() {
                 <th className="px-2 py-1">Carbs (g)</th>
                 <th className="px-2 py-1">Calories</th>
                 <th className="px-2 py-1">Feedback</th>
-                <th className="px-2 py-1">Summary</th>
+                {/* <th className="px-2 py-1">Summary</th> */}
               </tr>
             </thead>
             <tbody>
@@ -129,7 +129,7 @@ export default function SummaryCard() {
                   <td className={`px-2 py-1 font-semibold ${day.feedback === "GOOD" ? "text-green-600" : "text-red-600"}`}>
                     {day.feedback}
                   </td>
-                  <td className="px-2 py-1">
+                  {/* <td className="px-2 py-1">
                     <button
                       onClick={() => {
                         setSelectedSummary(day.summary || []);
@@ -139,7 +139,7 @@ export default function SummaryCard() {
                     >
                       View
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

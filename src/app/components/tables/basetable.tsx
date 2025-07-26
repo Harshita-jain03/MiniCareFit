@@ -172,7 +172,7 @@ const BaseTable = forwardRef(({
             key={field.key}
             type="text"
             placeholder={field.placeholder}
-            className="border px-2 py-1 rounded"
+            className="border px-2 py-1 rounded text-black"
             defaultValue={searchValues[field.key] || ''}
             onChange={(e) => debouncedSearchChange(field.key, e.target.value)}
           />
@@ -181,7 +181,7 @@ const BaseTable = forwardRef(({
         {dropdownFilters.map((filter) => (
           <select
             key={filter.key}
-            className="border px-2 py-1 rounded"
+            className="border px-2 py-1 rounded text-black"
             value={filterValues[filter.key] || ''}
             onChange={(e) => handleDropdownChange(filter.key, e.target.value)}
           >

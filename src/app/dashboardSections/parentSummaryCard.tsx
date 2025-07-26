@@ -35,41 +35,13 @@ export default function SummaryCard() {
       <h1 className="text-3xl font-bold text-blue-700">👨‍👩‍👧 Parent Dashboard</h1>
 
       {/* Section 1: Today's Snapshot */}
-      <div className="bg-white p-4 rounded shadow space-y-3 text-gray-800">
-        <h2 className="text-xl font-semibold text-blue-600">📅 Today - {today}</h2>
-        <p>🍴 <b>Food Consumed:</b> {todayData.food.join(", ")}</p>
-        <p>🔥 <b>Total Calories:</b> {todayData.calories} kcal</p>
-        <p>✅ <b>Tasks Completed:</b> {completedTasks.length}</p>
-        <p>🏆 <b>Rewards Completed:</b> {todayData.rewardsCompleted}</p>
-      </div>
+   
 
       {/* Section 2: Completed Tasks */}
-      <div className="bg-white p-4 rounded shadow text-gray-800">
-        <h2 className="text-xl font-semibold text-green-600 mb-2">✅ Completed Tasks</h2>
-        {completedTasks.length > 0 ? (
-          <ul className="list-disc pl-6 space-y-1">
-            {completedTasks.map((task, idx) => (
-              <li key={idx}>✅ {task.title}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No tasks completed today.</p>
-        )}
-      </div>
+     
 
       {/* Section 3: Pending Tasks */}
-      <div className="bg-white p-4 rounded shadow text-gray-800">
-        <h2 className="text-xl font-semibold text-yellow-600 mb-2">⏳ Pending Tasks</h2>
-        {pendingTasks.length > 0 ? (
-          <ul className="list-disc pl-6 space-y-1">
-            {pendingTasks.map((task, idx) => (
-              <li key={idx}>⏳ {task.title}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No pending tasks. Great job!</p>
-        )}
-      </div>
+     
 
       {/* Section 4: Past 7 Days Overview */}
       <div className="bg-white p-4 rounded shadow">
