@@ -1,45 +1,65 @@
 "use client";
 
 import { ColDef } from "ag-grid-community";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Basetable from "@/src/app/components/tables/basetable"; // Adjust path if needed
+import Basetable from "@/src/app/components/tables/basetable";
+
+interface Student {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+}
 
 export default function StudentsPage() {
   const tableRef = useRef<any>(null);
   const router = useRouter();
 
-  // Dummy student data (replace with fetched data later)
-  const dummyData = [
-    { id: 1, name: "Ram", age: 12, grade: "6th" },
-    { id: 2, name: "Jiya", age: 11, grade: "5th" },
-  ];
+  const [students, setStudents] = useState<Student[]>([]);
+  const [msg, setMsg] = useState<string>("");
 
-  // Edit student
-  const handleEdit = (student: any) => {
-    const name = prompt("Update name:", student.name);
-    const age = prompt("Update age:", student.age.toString());
-    const grade = prompt("Update grade:", student.grade);
-    if (name && age && grade) {
-      alert(`Updated to: ${name}, ${age}, ${grade}`);
-      // TODO: Implement actual update logic (API call)
-    }
-  };
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
 
-  // Delete student
+        const res = await fetch("/api/admin/student/register", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Unauthorized or failed to fetch students");
+
+        const data = await res.json();
+        const childrenOnly = data.filter((user: Student) => user.role === "child");
+        setStudents(childrenOnly);
+      } catch (err) {
+        console.error("❌ Failed to fetch students:", err);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  const handleEdit = (student: Student) => {
+  router.push(`/dashboard/admin/student/${student.id}`);
+};
+
   const handleDelete = (id: number) => {
     if (confirm("Are you sure you want to delete this student?")) {
-      alert(`Deleted student with ID: ${id}`);
-      // TODO: Implement actual delete logic (API call)
+      setMsg(`🗑️ Deleted student with ID: ${id}`);
+      // TODO: Add API call to delete
     }
   };
 
-  // Table columns
   const columns: ColDef[] = [
     { headerName: "ID", field: "id", width: 80 },
-    { headerName: "Name", field: "name" },
-    { headerName: "Age", field: "age" },
-    { headerName: "Grade", field: "grade" },
+    { headerName: "Username", field: "username" },
+    { headerName: "Email", field: "email" },
+    { headerName: "Role", field: "role" },
     {
       headerName: "Actions",
       field: "id",
@@ -74,11 +94,13 @@ export default function StudentsPage() {
         </button>
       </div>
 
-      <Basetable
-        ref={tableRef}
-        columns={columns}
-        gridOptions={{ rowData: dummyData }}
-      />
+      {msg && (
+        <div className="mb-4 text-green-700 font-medium bg-green-100 px-4 py-2 rounded-lg shadow">
+          {msg}
+        </div>
+      )}
+
+      <Basetable ref={tableRef} columns={columns} gridOptions={{ rowData: students }} />
     </div>
   );
 }
