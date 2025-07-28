@@ -1,18 +1,65 @@
 "use client";
 
 import { ColDef } from "ag-grid-community";
-import Basetable from "@/src/app/components/tables/basetable";// adjust if your BaseTable path is different
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Basetable from "@/src/app/components/tables/basetable";
+
+interface Student {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+}
 
 export default function StudentsPage() {
   const tableRef = useRef<any>(null);
+  const router = useRouter();
 
-  // Define columns for the table
+  const [students, setStudents] = useState<Student[]>([]);
+  const [msg, setMsg] = useState<string>("");
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+
+        const res = await fetch("/api/admin/student/register", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Unauthorized or failed to fetch students");
+
+        const data = await res.json();
+        const childrenOnly = data.filter((user: Student) => user.role === "child");
+        setStudents(childrenOnly);
+      } catch (err) {
+        console.error("❌ Failed to fetch students:", err);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  const handleEdit = (student: Student) => {
+  router.push(`/dashboard/admin/student/${student.id}`);
+};
+
+  const handleDelete = (id: number) => {
+    if (confirm("Are you sure you want to delete this student?")) {
+      setMsg(`🗑️ Deleted student with ID: ${id}`);
+      // TODO: Add API call to delete
+    }
+  };
+
   const columns: ColDef[] = [
     { headerName: "ID", field: "id", width: 80 },
-    { headerName: "Name", field: "name" },
-    { headerName: "Age", field: "age" },
-    { headerName: "Grade", field: "grade" },
+    { headerName: "Username", field: "username" },
+    { headerName: "Email", field: "email" },
+    { headerName: "Role", field: "role" },
     {
       headerName: "Actions",
       field: "id",
@@ -35,55 +82,25 @@ export default function StudentsPage() {
     },
   ];
 
-  // Dummy data to show in the table
-  const dummyData = [
-    { id: 1, name: "Ram", age: 12, grade: "6th" },
-    { id: 2, name: "Jiya", age: 11, grade: "5th" },
-  ];
-
-  // Handlers for edit and delete
-  const handleEdit = (student: any) => {
-    const name = prompt("Update name:", student.name);
-    const age = prompt("Update age:", student.age.toString());
-    const grade = prompt("Update grade:", student.grade);
-    if (name && age && grade) {
-      alert(`Updated to: ${name}, ${age}, ${grade}`);
-      // You can implement actual update logic here
-    }
-  };
-
-  const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this student?")) {
-      alert(`Deleted student with id ${id}`);
-      // You can implement actual delete logic here
-    }
-  };
-
   return (
-    <div className="p-4">
+    <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-black">All Students</h2>
+        <h2 className="text-2xl font-bold text-purple-700">📚 All Students</h2>
         <button
-          onClick={() => {
-            const name = prompt("Enter student name:");
-            const age = prompt("Enter age:");
-            const grade = prompt("Enter grade:");
-            if (name && age && grade) {
-              alert(`Added: ${name}, ${age}, ${grade}`);
-              // You can implement actual add logic here
-            }
-          }}
+          onClick={() => router.push("/dashboard/admin/student/register")}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          + Add Student
+          ➕ Register Student
         </button>
       </div>
 
-      <Basetable
-        ref={tableRef}
-        columns={columns}
-        gridOptions={{ rowData: dummyData }}
-      />
+      {msg && (
+        <div className="mb-4 text-green-700 font-medium bg-green-100 px-4 py-2 rounded-lg shadow">
+          {msg}
+        </div>
+      )}
+
+      <Basetable ref={tableRef} columns={columns} gridOptions={{ rowData: students }} />
     </div>
   );
 }

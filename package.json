@@ -11,6 +11,7 @@
   "dependencies": {
     "ag-grid-community": "^34.0.0",
     "ag-grid-react": "^34.0.0",
+    "cookie": "^1.0.2",
     "lodash.debounce": "^4.0.8",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.523.0",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/cookie": "^0.6.0",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",

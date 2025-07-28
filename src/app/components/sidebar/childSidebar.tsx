@@ -7,7 +7,7 @@ import { MdFavorite, MdFavoriteBorder, MdLocalHospital } from "react-icons/md";
 const childMenu: MenuItemConfig[] = [
   { label: "Dashboard", href: "/dashboard/child",  },
   { label: "Health", href: "/dashboard/child/health", icon: <MdLocalHospital  /> },
-  { label: "Reward", href: "/dashboard/child/rewards", icon: <FaGift /> },
+  { label: "Reward", href: "/dashboard/child/reward", icon: <FaGift /> },
   { label: "Tools", href: "/dashboard/child/tools", icon: <FaStopwatch /> },
   { label: "To-Do List", href: "/dashboard/child/to-do-list", icon: <FaClipboardList /> }
   

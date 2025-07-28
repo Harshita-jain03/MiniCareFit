@@ -129,7 +129,7 @@ export default function RewardPage() {
         </button>
         <Link className="px-4 py-2 rounded font-medium bg-blue-600 text-white"
   href={{
-    pathname: "/dashboard/child/rewards/summary",
+    pathname: "/dashboard/child/reward/summary",
     query: { data: JSON.stringify(history) }
   }}
 >
