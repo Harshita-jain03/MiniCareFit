@@ -5,7 +5,7 @@ import { serialize } from "cookie";
 
 // Dummy user database
 const USERS = [
-  { email: "admin@example.com", password: "admin123", role: "Admin" },
+  { email: "admin@example.com", password: "admin123", role: "Teacher" },
   { email: "parent@example.com", password: "parent123", role: "Parent" },
   { email: "child@example.com", password: "child123", role: "Child" },
 ];

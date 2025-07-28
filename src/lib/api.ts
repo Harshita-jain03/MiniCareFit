@@ -1,4 +1,7 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+// const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 
 const API_URLS = {
   STUDENT_REGISTER:{
