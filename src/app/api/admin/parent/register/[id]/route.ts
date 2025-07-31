@@ -14,7 +14,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Missing student ID" }, { status: 400 });
     }
 
-    const { data, status } = await fetchWithTokenRetry(`${API_URLS.STUDENT_REGISTER.UPDATE(id)}`, {
+    const { data, status } = await fetchWithTokenRetry(`${API_URLS.PARENT_REGISTER.UPDATE}${id}/`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

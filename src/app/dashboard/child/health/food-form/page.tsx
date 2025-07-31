@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import { useState } from "react";
 
 type FoodEntry = {
@@ -8,9 +9,11 @@ type FoodEntry = {
 };
 
 export default function FoodForm({
+  childId,
   onAddFood,
 }: {
-  onAddFood: (item: FoodEntry) => void;
+  childId: number;
+  onAddFood?: (item: FoodEntry) => void;
 }) {
   const [entry, setEntry] = useState<FoodEntry>({
     food: "",
@@ -18,11 +21,39 @@ export default function FoodForm({
     quantity: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!entry.food || !entry.mealType || !entry.quantity) return;
-    onAddFood(entry); // ✅ Pass up to HealthPage
-    setEntry({ food: "", mealType: "", quantity: "" }); // Clear form
+    const { food, mealType, quantity } = entry;
+
+    if (!food || !mealType || !quantity) return;
+
+    try {
+      const res = await fetch('http://localhost:8000/health/food-logs/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+        body: JSON.stringify({
+          child: childId,
+          food_item: food,
+          meal_type: mealType,
+          quantity,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) throw new Error(result?.error || 'Something went wrong');
+
+      console.log("✅ Food logged:", result);
+      if (onAddFood) onAddFood(entry);
+      setEntry({ food: "", mealType: "", quantity: "" }); // Clear form
+
+    } catch (err) {
+      console.error("❌ Error submitting food log:", err);
+      alert("Failed to submit food entry.");
+    }
   };
 
   return (

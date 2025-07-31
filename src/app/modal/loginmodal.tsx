@@ -118,6 +118,7 @@ import { useRouter } from "next/navigation";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  onRegisterClick:()=>void;
   role: "Parent" | "Child" | "Admin";
 };
 
