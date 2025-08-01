@@ -2,6 +2,7 @@
 
 import Basetable from "@/src/app/components/tables/basetable";
 import type { ColDef } from "ag-grid-community";
+import API_URLS from "@/src/lib/api"; 
 
 const foodTableColumns: ColDef[] = [
   { field: "food_item", headerName: "Food" }, // ✅ corrected
@@ -16,7 +17,7 @@ const foodTableColumns: ColDef[] = [
 ];
 
 export default function FoodTableWrapper() {
-  const childId = "9"; // ✅ Replace with dynamic child ID if needed
+  // const childId = "10"; // ✅ Replace with dynamic child ID if needed
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md">
@@ -25,7 +26,9 @@ export default function FoodTableWrapper() {
       </h2>
       <Basetable
         columns={foodTableColumns}
-        endpoint={`/api/child/food-logs?id=${childId}`} // ✅ correct route
+        // endpoint={`/child/food-logs?id=${childId}`} // ✅ correct route
+        endpoint={`/api/child/food_logs`} // ✅ correct — must match your API route.ts location
+        // endpoint={`${API_URLS.HEALTH.FOOD_LOGS}`} // ✅ direct 8000 call
         autoRefresh={false}
         searchFields={[{ key: "food_item", placeholder: "Search food..." }]} // ✅ updated
         dropdownFilters={[
