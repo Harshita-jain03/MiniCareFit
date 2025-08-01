@@ -4,37 +4,34 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function RegisterParentPage() {
-  const [username, setName] = useState("");
-  // const [child_name, setChildName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const response = await fetch("http://localhost:8000/users/users/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: username,           // ✅ this fixes the "username is required" error
-      // child_name,
-      email,
-      password,
-      role: "parent",           // ✅ Capitalize properly if backend expects "Parent"
-    }),
-  });
+    const response = await fetch("/api/admin/parent/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        role: "parent",
+      }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (response.ok) {
-    alert(`✅ parent registered!\nLogin Email: ${email}\nPassword: ${password}`);
-    router.push("/dashboard/admin/parent");
-  } else {
-    console.error(data);  // helpful for debugging in dev
-    alert(`❌ Error: ${JSON.stringify(data)}`);
-  }
-};
+    if (response.ok) {
+      alert(`✅ Parent registered!\nEmail: ${email}\nPassword: ${password}`);
+      router.push("/dashboard/admin/parent");
+    } else {
+      alert(`❌ Error: ${JSON.stringify(data)}`);
+    }
+  };
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded shadow">
@@ -43,19 +40,10 @@ export default function RegisterParentPage() {
         <input
           placeholder="Parent Name"
           value={username}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
           required
           className="w-full border p-2 rounded text-black"
         />
-        {/* <input
-          placeholder="Child_name"
-       
-          value={child_name}
-          onChange={(e) => setChildName(e.target.value)}
-          required
-          className="w-full border p-2 rounded text-black"
-        />
-        */}
         <input
           placeholder="Parent Email"
           type="email"

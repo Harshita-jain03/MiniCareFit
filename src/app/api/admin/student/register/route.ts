@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.headers.get("authorization");
 
-    const { data, status } = await fetchWithTokenRetry(API_URLS.STUDENT_REGISTER.CREATE, {
+    const { data, status } = await fetchWithTokenRetry(API_URLS.STUDENT_REGISTER.GET_ALL, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

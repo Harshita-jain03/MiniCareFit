@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-export default function EditStudentPage() {
+export default function EditParentPage() {
   const { id } = useParams();
   const router = useRouter();
+
   const [formData, setFormData] = useState({ username: "", email: "" });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
-    const fetchStudent = async () => {
+    const fetchParent = async () => {
       try {
         const res = await fetch(`http://localhost:8000/users/users/${id}/`, {
           method: "GET",
@@ -24,13 +25,13 @@ export default function EditStudentPage() {
         const data = await res.json();
         setFormData({ username: data.username, email: data.email });
       } catch (err) {
-        console.error("Failed to fetch student:", err);
+        console.error("Failed to fetch parent:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) fetchStudent();
+    if (id) fetchParent();
   }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +39,6 @@ export default function EditStudentPage() {
     const token = localStorage.getItem("access_token");
 
     try {
-     
       const res = await fetch(`http://localhost:8000/users/users/${id}/`, {
         method: "PATCH",
         headers: {
@@ -53,8 +53,8 @@ export default function EditStudentPage() {
       });
 
       if (res.ok) {
-        alert("✅ Student updated successfully");
-        router.push("/dashboard/admin/student");
+        alert("✅ Parent updated successfully");
+        router.push("/dashboard/admin/parent");
       } else {
         const err = await res.json();
         alert("❌ Failed: " + (err?.error || "Unknown error"));
@@ -64,11 +64,11 @@ export default function EditStudentPage() {
     }
   };
 
-  if (loading) return <p>Loading student...</p>;
+  if (loading) return <p>Loading parent...</p>;
 
   return (
     <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4 text-black">✏️ Edit Student</h1>
+      <h1 className="text-2xl font-bold mb-4 text-black">✏️ Edit Parent</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -97,7 +97,7 @@ export default function EditStudentPage() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
         >
           💾 Save Changes
         </button>

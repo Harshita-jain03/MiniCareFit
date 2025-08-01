@@ -1,18 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import FoodTable from "./foodTable";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  CartesianGrid,
-  Legend,
-} from "recharts";
+
 import { useState } from "react";
 
 const barData = [ /* same as before */ ];

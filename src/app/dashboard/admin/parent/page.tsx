@@ -1,43 +1,64 @@
 "use client";
 
-import { ColDef } from "ag-grid-community";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Basetable from "@/src/app/components/tables/basetable"; // Adjust path if needed
+import { ColDef } from "ag-grid-community";
+import Basetable from "@/src/app/components/tables/basetable";
+
+interface Parent {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+}
 
 export default function ParentsPage() {
   const tableRef = useRef<any>(null);
   const router = useRouter();
+  const [parents, setParents] = useState<Parent[]>([]);
+  const [msg, setMsg] = useState<string>("");
 
-  // Dummy parent data (replace with fetched data later)
-  const dummyData = [
-    { id: 1, name: "Ram", child_name: "Rohan" },
-    { id: 2, name: "Jiya", child_name: "Riya" },
-  ];
+  useEffect(() => {
+    const fetchParents = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
 
-  // Edit parent
-  const handleEdit = (parent: any) => {
-    const name = prompt("Update name:", parent.name);
-    const child_name = prompt("Update child name:", parent.child_name);
+        const res = await fetch("/api/admin/parent/register", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    if (name && child_name) {
-      alert(`Updated to: ${name}, ${child_name}`);
-      // TODO: Add API update logic here
-    }
+        if (!res.ok) throw new Error("Failed to fetch parents");
+
+        const data = await res.json();
+        const parentsOnly = data.filter((user: Parent) => user.role === "parent");
+        setParents(parentsOnly);
+      } catch (err) {
+        console.error("❌ Failed to fetch parents:", err);
+      }
+    };
+
+    fetchParents();
+  }, []);
+
+  const handleEdit = (parent: Parent) => {
+    router.push(`/dashboard/admin/parent/${parent.id}`);
   };
 
-  // ❌ FIXED: This was wrongly nested before
   const handleDelete = (id: number) => {
     if (confirm("Are you sure you want to delete this parent?")) {
-      alert(`Deleted parent with ID: ${id}`);
-      // TODO: Add API delete logic here
+      setMsg(`🗑️ Deleted parent with ID: ${id}`);
+      // TODO: API call to delete parent
     }
   };
 
   const columns: ColDef[] = [
     { headerName: "ID", field: "id", width: 80 },
-    { headerName: "Name", field: "name" },
-    { headerName: "Child Name", field: "child_name" },
+    { headerName: "Name", field: "username" },
+    { headerName: "Email", field: "email" },
+    { headerName: "Role", field: "role" },
     {
       headerName: "Actions",
       field: "id",
@@ -64,21 +85,23 @@ export default function ParentsPage() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-purple-700">
-          📚 All Parents and their Children
+          👨‍👩‍👧 All Parents
         </h2>
         <button
           onClick={() => router.push("/dashboard/admin/parent/register")}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          ➕ Register parent
+          ➕ Register Parent
         </button>
       </div>
 
-      <Basetable
-        ref={tableRef}
-        columns={columns}
-        gridOptions={{ rowData: dummyData }}
-      />
+      {msg && (
+        <div className="mb-4 text-green-700 font-medium bg-green-100 px-4 py-2 rounded-lg shadow">
+          {msg}
+        </div>
+      )}
+
+      <Basetable ref={tableRef} columns={columns} gridOptions={{ rowData: parents }} />
     </div>
   );
 }
