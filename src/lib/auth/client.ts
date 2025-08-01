@@ -1,54 +1,19 @@
-// src/lib/auth/client.ts
-
-/**
- * For JSON-based requests
- */
-export async function apiFetch<T>(
-  url: string,
-  options: RequestInit = {},
-  includeAuth: boolean = true
-): Promise<T> {
-  const headers = new Headers(options.headers || {});
-
-  if (!(options.body instanceof FormData)) {
-    headers.set("Content-Type", "application/json");
-  }
-
-  if (includeAuth) {
-    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    if (token) headers.set("Authorization", `Bearer ${token}`);
-  }
-
-  const res = await fetch(url, { ...options, headers });
+export async function loginUser(username: string, password: string) {
+  const res = await fetch("http://localhost:8000/users/api/token/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.message || "Something went wrong");
+    throw new Error("Login failed");
   }
 
-  return res.json();
-}
+  const { access, refresh } = await res.json();
 
-/**
- * For FormData-based requests (e.g., file uploads, student register)
- */
-export async function formFetch(
-  url: string,
-  formData: FormData,
-  method: "POST" | "PATCH" = "POST"
-): Promise<Response> {
-  return fetch(url, {
-    method,
-    body: formData,
-    // Do NOT set Content-Type — browser will set correct multipart/form-data boundaries
-  });
-}
+  // Store tokens securely
+  localStorage.setItem("accessToken", access);
+  localStorage.setItem("refreshToken", refresh);
 
-/**
- * Specific: Register student from admin (POST to proxy route)
- */
-export async function registerStudentFromAdmin(
-  formData: FormData
-): Promise<Response> {
-  return formFetch("/admin/student/register", formData, "POST");
+  return { access, refresh };
 }

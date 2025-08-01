@@ -1,9 +1,16 @@
 // const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+console.log(">>>",BASE_URL)
 
 
 const API_URLS = {
+
+ 
+  LOGIN: "http://localhost:8000/users/api/token/",
+  REFRESH: "http://localhost:8000/users/api/token/refresh/",
+  USER_LIST: "http://localhost:8000/users/users/",
+
   STUDENT_REGISTER:{
     CREATE:`${BASE_URL}/users/users/`,
     GET_ALL:`${BASE_URL}/users/users/`,

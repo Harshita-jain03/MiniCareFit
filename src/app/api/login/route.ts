@@ -1,41 +1,30 @@
-// src/app/api/login/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
-import { serialize } from "cookie";
-
-// Dummy user database
-const USERS = [
-  { email: "admin@example.com", password: "admin123", role: "Teacher" },
-  { email: "parent@example.com", password: "parent123", role: "Parent" },
-  { email: "child@example.com", password: "child123", role: "Child" },
-];
+import API_URLS from "@/src/lib/api";
+import { saveToken } from "@/src/lib/auth/server";
 
 export async function POST(req: NextRequest) {
-  try {
-    const { email, password } = await req.json();
+  const body = await req.json();
+  console.log("[Login API] Body:", body);
 
-    const user = USERS.find((u) => u.email === email && u.password === password);
-    if (!user) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
-    }
+  const response = await fetch(API_URLS.LOGIN, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
 
-    const dummyToken = "mock.jwt.token"; // later replace with real JWT
+  const data = await response.json();
+  console.log("[Login API] Backend responded with:", data);
 
-    const res = NextResponse.json({ message: "Login successful", role: user.role });
-
-    res.headers.set(
-      "Set-Cookie",
-      serialize("token", dummyToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-      })
-    );
-
-    return res;
-  } catch (error) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  if (!response.ok || !data?.access || !data?.refresh) {
+    return NextResponse.json({ error: "Login failed" }, { status: 401 });
   }
+
+  // Save tokens in cookies and return a JSON success message
+  const res = await saveToken(data.access, data.refresh);
+
+  // Optionally include decoded user info from token here if needed
+  return new NextResponse(JSON.stringify({ message: "Login successful" }), {
+    status: 200,
+    headers: res.headers, // preserve Set-Cookie from saveToken
+  });
 }
