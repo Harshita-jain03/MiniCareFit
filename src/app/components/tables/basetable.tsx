@@ -137,7 +137,7 @@ const BaseTable = forwardRef(({
 
   useEffect(() => {
     if (!autoRefresh) return;
-    const interval = setInterval(fetchData, 2 * 60 * 1000); // every 2 mins
+    const interval = setInterval(fetchData, 60 * 1000); // every 2 mins
     return () => clearInterval(interval);
   }, [fetchData, autoRefresh]);
 

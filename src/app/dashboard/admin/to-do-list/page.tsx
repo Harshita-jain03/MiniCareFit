@@ -27,7 +27,7 @@ export default function ToDoMainPage() {
       const token = localStorage.getItem("access_token");
 
       try {
-        const res = await fetch("/api/todo/tasks", {
+        const res = await fetch("/api/admin/to_do_list", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

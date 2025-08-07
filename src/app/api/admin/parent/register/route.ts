@@ -1,3 +1,57 @@
+// import API_URLS from '@/src/lib/api';;
+// import { fetchWithTokenRetry } from '@/src/lib/auth/server';
+// import { NextRequest, NextResponse } from 'next/server';
+
+
+// export async function GET(req: NextRequest) {
+//   console.log('➡️ GET /admin/student/register');
+
+//   try {
+//     const token = req.headers.get("authorization");
+
+//     const { data, status } = await fetchWithTokenRetry(API_URLS.PARENT_REGISTER.GET_ALL, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': token || '',
+//       },
+//     });
+
+//     return NextResponse.json(data, { status });
+//   } catch (err) {
+//     console.error('[student/register] Failed to fetch students:', err);
+//     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+//   }
+// }
+
+
+// export async function POST(request: NextRequest) {
+//   console.log('➡️ POST /admin/student/register');
+
+//   try {
+//     // const formData = await request.formData(); // FormData must match client
+//     const body = await request.json();
+
+
+//     const finalUrl = API_URLS.PARENT_REGISTER.CREATE; // assumes your backend expects this
+
+//     const { data, status } = await fetchWithTokenRetry(finalUrl, {
+//       method: 'POST',
+//       headers: {
+//     'Content-Type': 'application/json',
+//   },
+//       body: JSON.stringify(body),
+//     });
+
+//     return NextResponse.json(data, { status });
+//   } catch (err) {
+//     console.error('[student/register] Failed to register student:', err);
+//     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+//   }
+// }
+
+
+
 import API_URLS from '@/src/lib/api';;
 import { fetchWithTokenRetry } from '@/src/lib/auth/server';
 import { NextRequest, NextResponse } from 'next/server';
@@ -19,35 +73,60 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(data, { status });
   } catch (err) {
-    console.error('[student/register] Failed to fetch students:', err);
+    console.error('[parent/register] Failed to fetch students:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 
+// export async function POST(request: NextRequest) {
+//   console.log('➡️ POST /admin/parent/register');
+
+//   try {
+//     // const formData = await request.formData(); // FormData must match client
+//     const body = await request.json();
+
+
+//     const finalUrl = API_URLS.PARENT_REGISTER.CREATE; // assumes your backend expects this
+
+//     const { data, status } = await fetchWithTokenRetry(finalUrl, {
+//       method: 'POST',
+//       headers: {
+//     'Content-Type': 'application/json',
+//   },
+//       body: JSON.stringify(body),
+//     });
+
+//     return NextResponse.json(data, { status });
+//   } catch (err) {
+//     console.error('[parent/register] Failed to register student:', err);
+//     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+//   }
+// }
+
+
+
 export async function POST(request: NextRequest) {
-  console.log('➡️ POST /admin/student/register');
+  console.log('➡️ POST /admin/parent/register');
 
   try {
-    // const formData = await request.formData(); // FormData must match client
-    const body = await request.json();
+    const formData = await request.formData(); // Correct for multipart/form-data
 
+    const body: Record<string, any> = {};
+    formData.forEach((value, key) => {
+      body[key] = value;
+    });
 
-    const finalUrl = API_URLS.PARENT_REGISTER.CREATE; // assumes your backend expects this
+    const finalUrl = API_URLS.PARENT_REGISTER.CREATE;
 
     const { data, status } = await fetchWithTokenRetry(finalUrl, {
       method: 'POST',
-      headers: {
-    'Content-Type': 'application/json',
-  },
-      body: JSON.stringify(body),
+      body: formData, // Forward the same FormData to your backend API
     });
 
     return NextResponse.json(data, { status });
   } catch (err) {
-    console.error('[student/register] Failed to register student:', err);
+    console.error('[parent/register] Failed to register parent:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
-
