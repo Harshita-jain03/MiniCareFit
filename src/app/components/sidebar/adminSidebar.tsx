@@ -7,7 +7,8 @@ const adminMenu: MenuItemConfig[] = [
   { label: "Students", href: "/dashboard/admin/student", icon: <FaUser /> },
   {label:"Parent",href:"/dashboard/admin/parent",icon:<FaUser/>},
   { label: "To-Do List", href: "/dashboard/admin/to-do-list", icon: <FaTasks /> },
-  {label:"account",href:"/dashboard/admin/account",icon:<FaTasks/>}
+  {label:"account",href:"/dashboard/admin/account",icon:<FaTasks/>},
+  {label:"parent-child",href:"/dashboard/admin/student-parent-mapping",icon:<FaTasks/>}
 ];
 
 export default function AdminSidebar() {

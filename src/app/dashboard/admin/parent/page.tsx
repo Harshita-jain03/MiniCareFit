@@ -162,12 +162,12 @@ export default function ParentsPage() {
     router.push(`/dashboard/admin/parent/${parent.id}`);
   };
 
-  const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this student?")) {
-      setMsg(`🗑️ Deleted student with ID: ${id}`);
-      // TODO: Add API call to delete
-    }
-  };
+  // const handleDelete = (id: number) => {
+  //   if (confirm("Are you sure you want to delete this student?")) {
+  //     setMsg(`🗑️ Deleted student with ID: ${id}`);
+  //     // TODO: Add API call to delete
+  //   }
+  // };
 
   const columns: ColDef[] = [
     { headerName: "ID", field: "id", width: 80 },
@@ -213,12 +213,12 @@ export default function ParentsPage() {
           >
             Edit
           </button>
-          <button
+          {/* <button
             onClick={() => handleDelete(params.data.id)}
             className="text-red-600 hover:underline"
           >
             Delete
-          </button>
+          </button> */}
         </div>
       ),
     },

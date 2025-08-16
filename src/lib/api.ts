@@ -38,15 +38,32 @@ const API_URLS = {
     GET_ME:`${BASE_URL}/users/me/`
   },
 
-  HEALTH: {
-    GET_ALL:`${BASE_URL}/health/food-items/`,
-    FOOD_LOGS:`${BASE_URL}/health/food-logs/`,
-    FOOD_SUMMARY:`${BASE_URL}/health/food-summary/`
+  FOOD_LOGS: {
+    GET_ALL:`${BASE_URL}/health/food-logs/`,
+    CREATE: `${BASE_URL}/health/food-logs/`
+    // FOOD_LOGS:`${BASE_URL}/health/food-logs/`,
+    // FOOD_SUMMARY:`${BASE_URL}/health/food-summary/`
   },
 
   REWARDS: {
-    GET_ALL: `${BASE_URL}/reward/rewards/ `,
-    REDEEM: `${BASE_URL}/reward/redemptions/ `
+    GET_ALL: `${BASE_URL}/reward/rewards/`,
+    REDEEM: `${BASE_URL}/reward/redemptions/`,
+    REDEMPTIONS: `${BASE_URL}/reward/redemptions/`,
+    BALANCE: `${BASE_URL}/reward/balance/`,
+  },
+
+  PARENT_CHILD_MAPPING: {
+    CREATE: `${BASE_URL}/users/parent-child-mappings/`,
+    GET_ALL: `${BASE_URL}/users/parent-child-mappings/`,
+  },
+  
+  USERS : {
+    GET_ALL : `${BASE_URL}/users/users/`
+  },
+
+  FOOD_ITEMS : {
+    CREATE : `${BASE_URL}/health/food-items/`,
+    GET_ALL : `${BASE_URL}/health/food-items/`
   }
 
 };

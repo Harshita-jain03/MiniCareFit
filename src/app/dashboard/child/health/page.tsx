@@ -1,51 +1,70 @@
-"use client";
-import { useRouter } from "next/navigation";
-import FoodTable from "./foodTable";
+import Link from "next/link";
+import { cookies } from "next/headers";
+import { jwtDecode } from "jwt-decode";
+import FoodLogsTable from "./foodTable"; // make sure the filename really is foodTable.tsx (or adjust)
 
-import { useState } from "react";
+type JwtPayload = {
+  user_id: number;
+  role?: string;
+  child_id?: number;
+  child?: { id: number };
+};
 
-const barData = [ /* same as before */ ];
-const lineData = [ /* same as before */ ];
+export default async function HealthPage() {
+  // Some projects type cookies() as sync, some as async.
+  // This works in both cases without TS errors.
+  let token: string | undefined;
 
-export default function HealthPage() {
-  const router = useRouter();
-  const [showSummary, setShowSummary] = useState(false);
+  try {
+    // try sync usage
+    // @ts-expect-error - in some Next versions this is sync
+    token = cookies().get("token")?.value;
+  } catch {
+    // fallback to awaited usage
+  
+    const c = await cookies();
+    token = c.get("token")?.value;
+  }
+
+  let childId: number | null = null;
+
+  if (token) {
+    try {
+      const payload = jwtDecode<JwtPayload>(token);
+      const role = (payload.role || "").toLowerCase();
+      childId =
+        payload.child_id ??
+        payload.child?.id ??
+        (role === "child" || role === "student" ? payload.user_id : null);
+    } catch (e) {
+      console.error("Failed to decode JWT:", e);
+    }
+  }
+
+  if (!childId) {
+    return <div className="p-6">No child id found in token.</div>;
+  }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <main className="flex-1 p-6 space-y-8">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-blue-700">
-            {showSummary ? "📊 Weekly Health Summary" : "🩺 Health Dashboard"}
-          </h1>
-          <div className="space-x-3">
-            <button
-              onClick={() => setShowSummary(!showSummary)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition"
-            >
-              {showSummary ? "⬅ Back to Dashboard" : "📈 View Summary"}
-            </button>
-            <button
-              onClick={() => router.push("/dashboard/child/health/food-form")}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition"
-            >
-              ➕ Add Food
-            </button>
-          </div>
-        </div>
+    <div className="p-6 space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-blue-600">🩺 Health Dashboard</h2>
 
-        {/* Main View */}
-        {!showSummary ? (
-          <>
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <FoodTable />
-            </div>
-          </>
-        ) : (
-          <div className="space-y-8">{/* Same Summary Section as Before */}</div>
-        )}
-      </main>
+        {/* ➕ Add Food button */}
+        <Link
+          href="/dashboard/child/health/food-form"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md"
+        >
+          ➕ Add Food
+        </Link>
+      </div>
+
+      {/* Food logs table */}
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <h3 className="text-lg font-semibold text-blue-600 mb-4">📋 Food Logs</h3>
+        <FoodLogsTable childId={childId} />
+      </div>
     </div>
   );
 }
