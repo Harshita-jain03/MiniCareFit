@@ -1,6 +1,3 @@
-
-
-// src/app/api/child/dashboard/route.ts
 import API_URLS from '@/src/lib/api';
 import {
   fetchWithTokenRetry,
@@ -9,86 +6,75 @@ import {
 } from '@/src/lib/auth/server';
 import { NextRequest, NextResponse } from 'next/server';
 
-function extractChildId(me: any, payload: any): number | null {
-  // 1) explicit fields
-  if (payload?.child_id) return Number(payload.child_id);
-  if (me?.child_id) return Number(me.child_id);
-
-  // 2) nested shapes we’ve seen
-  if (me?.child?.id) return Number(me.child.id);
-  if (me?.profile?.child?.id) return Number(me.profile.child.id);
-
-  // 3) if the JWT role is child, sometimes the user_id is the child id
-  if (payload?.role && String(payload.role).toLowerCase() === 'child' && payload?.user_id) {
-    return Number(payload.user_id);
-  }
-
-  return null;
-}
-
 export async function GET(req: NextRequest) {
   try {
+    // must have auth cookies
     const token = getTokenFromRequest(req);
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // ?id= override
     const url = new URL(req.url);
-    const overrideId = url.searchParams.get('id');
-    let childId: number | null = overrideId ? Number(overrideId) : null;
 
-    // Try to resolve from JWT + /users/me
-    if (!childId) {
-      const payload = decodeTokenFromRequest(req) as any | null;
-
-      let me: any = null;
-      try {
-        const meRes = await fetchWithTokenRetry(API_URLS.USER.GET_ME, { method: 'GET' });
-        me = meRes.data || null;
-      } catch {
-        /* ignore – we’ll fall back */
-      }
-
-      childId = extractChildId(me, payload);
+    // Optional testing override: /api/child/dashboard?child=15
+    const override = url.searchParams.get('child');
+    if (override) {
+      const [w, p] = await Promise.all([
+        fetchWithTokenRetry(`${API_URLS.HEALTH.WEEKLY_SUMMARY}?child_id=${override}`, { method: 'GET' }),
+        fetchWithTokenRetry(`${API_URLS.HEALTH.PROGRESS_TODAY}?child_id=${override}`, { method: 'GET' }),
+      ]);
+      return NextResponse.json(
+        { child_id: Number(override), weekly: w.data ?? null, progress: p.data ?? null },
+        { status: 200, headers: { 'x-child-id': String(override) } }
+      );
     }
 
-    // If still not found, do NOT 400; return empty list with debug header
-    if (!childId || Number.isNaN(childId)) {
-      return new NextResponse(JSON.stringify([]), {
-        status: 200,
-        headers: {
-          'content-type': 'application/json',
-          'x-child-id': 'not-found',
-          'x-debug': 'child id not found in token or /users/me',
-        },
-      });
+    // 1) decode JWT to get logged-in user id
+    const payload = decodeTokenFromRequest(req) as any | null;
+    const userId = payload?.user_id;
+    if (!userId) {
+      return NextResponse.json(
+        { child_id: null, weekly: null, progress: null, debug: 'user_id missing in token' },
+        { status: 200 }
+      );
     }
 
-    // Fetch all logs from backend
-    const { data } = await fetchWithTokenRetry(API_URLS.FOOD_LOGS.GET_ALL, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
+    // 2) fetch that user’s record from /users/users/{id}/ (no backend changes)
+    const userResp = await fetchWithTokenRetry(API_URLS.USERS.GET_ONE(userId), { method: 'GET' });
+    if (userResp.status === 404) {
+      return NextResponse.json(
+        { child_id: null, weekly: null, progress: null, debug: `user ${userId} not found` },
+        { status: 200 }
+      );
+    }
+    const user = userResp.data || {};
 
-    const list: any[] = Array.isArray(data?.results)
-      ? data.results
-      : Array.isArray(data)
-      ? data
-      : [];
+    // 3) role check: only allow if role is "child"
+    const role = String(user?.role || payload?.role || '').toLowerCase();
+    if (role !== 'child') {
+      // you asked to show data only for child users
+      return NextResponse.json(
+        { error: 'Only child users have a health dashboard', child_id: null },
+        { status: 403 }
+      );
+    }
 
-    // Filter logs belonging to this child
-    const filtered = list.filter((r) => Number(r?.child) === Number(childId));
+    // 4) use logged-in user id as child_id
+    const childId = Number(userId);
 
-    return new NextResponse(JSON.stringify(filtered), {
-      status: 200,
-      headers: {
-        'content-type': 'application/json',
-        'x-child-id': String(childId),
-      },
-    });
+    // 5) hit health APIs with child_id
+    const weeklyUrl   = `${API_URLS.HEALTH.WEEKLY_SUMMARY}?child_id=${childId}`;
+    const progressUrl = `${API_URLS.HEALTH.PROGRESS_TODAY}?child_id=${childId}`;
+
+    const [w, p] = await Promise.all([
+      fetchWithTokenRetry(weeklyUrl, { method: 'GET' }),
+      fetchWithTokenRetry(progressUrl, { method: 'GET' }),
+    ]);
+
+    return NextResponse.json(
+      { child_id: childId, weekly: w.data ?? null, progress: p.data ?? null },
+      { status: 200, headers: { 'x-child-id': String(childId) } }
+    );
   } catch (err) {
     console.error('[api/child/dashboard] GET error:', err);
-    return NextResponse.json({ error: 'Failed to fetch child food logs' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to load child dashboard' }, { status: 500 });
   }
 }

@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const token = req.headers.get("authorization")?.replace("Bearer ", "") || "";
-  const { data, status } = await fetchWithTokenRetry(API_URLS.HEALTH.FOOD_LOGS, {
+  const { data, status } = await fetchWithTokenRetry(API_URLS.FOOD_LOGS.GET_ALL, {
     method: "GET",
     headers: buildAuthHeader(token),
   });

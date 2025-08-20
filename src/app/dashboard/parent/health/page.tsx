@@ -50,7 +50,7 @@ export default function HealthPage() {
         {!showSummary ? (
           <>
             <div className="bg-white p-6 rounded-xl shadow-md">
-              <FoodTable />
+              <FoodTable/>
             </div>
           </>
         ) : (

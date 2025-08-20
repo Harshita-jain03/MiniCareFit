@@ -1,75 +1,271 @@
-"use client";
+// app/dashboard/parent/weekly/page.tsx
+// If your folder path is different, place this file accordingly.
 
-import { useState } from "react";
+type DayRow = {
+  date: string;
+  day: string;
+  tasks_completed: number;
+  rewards: number;
+  calories: number;
+};
 
-export default function SummaryCard() {
-  const today = new Date().toLocaleDateString("en-GB");
+type Points = {
+  earned_all_time: number;
+  spent_all_time: number;
+  balance: number;
+  earned_this_week: number;
+};
 
-  const [todayData] = useState({
-    food: ["Milk", "Chapati", "Paneer"],
-    calories: 720,
-    rewardsCompleted: 1,
-    tasks: [
-      { title: "Finish homework", completed: true },
-      { title: "Read a book", completed: false },
-      { title: "Drink 2L water", completed: true },
-      { title: "Exercise 30 mins", completed: false },
-    ],
-  });
+type ChildSummary = {
+  child: { id: number; name: string };
+  range: { from_?: string; to: string };
+  daily: DayRow[];
+  totals: { tasks_completed: number; rewards: number; calories: number };
+  points: Points;
+};
 
-  const [weeklyData] = useState([
-    { day: "Mon", tasks: 2, rewards: 1, calories: 850 },
-    { day: "Tue", tasks: 3, rewards: 0, calories: 720 },
-    { day: "Wed", tasks: 1, rewards: 0, calories: 560 },
-    { day: "Thu", tasks: 4, rewards: 1, calories: 900 },
-    { day: "Fri", tasks: 2, rewards: 0, calories: 700 },
-    { day: "Sat", tasks: 3, rewards: 2, calories: 820 },
-    { day: "Sun", tasks: 3, rewards: 1, calories: 750 },
-  ]);
+type WeeklyData = {
+  range: { from: string; to: string };
+  count: number;
+  summaries: ChildSummary[];
+};
 
-  const completedTasks = todayData.tasks.filter(t => t.completed);
-  const pendingTasks = todayData.tasks.filter(t => !t.completed);
+// const DATA: WeeklyData = {
+//   range: {
+//     from: "2025-08-11",
+//     to: "2025-08-17",
+//   },
+//   count: 1,
+//   summaries: [
+//     {
+//       child: {
+//         // id: 1,
+//         // name: "harshita",
+//       },
+//       range: {
+//         from_: "2025-08-11",
+//         to: "2025-08-17",
+//       },
+//       daily: [
+//         // { date: "2025-08-11", day: "Mon", tasks_completed: 0, rewards: 0, calories: 0 },
+//         // { date: "2025-08-12", day: "Tue", tasks_completed: 0, rewards: 0, calories: 0 },
+//         // { date: "2025-08-13", day: "Wed", tasks_completed: 0, rewards: 0, calories: 100 },
+//         // { date: "2025-08-14", day: "Thu", tasks_completed: 0, rewards: 0, calories: 0 },
+//         // { date: "2025-08-15", day: "Fri", tasks_completed: 0, rewards: 0, calories: 0 },
+//         // { date: "2025-08-16", day: "Sat", tasks_completed: 0, rewards: 0, calories: 0 },
+//         // { date: "2025-08-17", day: "Sun", tasks_completed: 0, rewards: 0, calories: 0 },
+//       ],
+//       totals: { tasks_completed: 0, rewards: 0, calories: 100 },
+//       points: { earned_all_time: 0, spent_all_time: 0, balance: 0, earned_this_week: 0 },
+//     },
+//   ],
+// };
+
+export default function WeeklyTablePage() {
+  // const summary = DATA.summaries?.[0];
+  // const balance = summary?.points?.balance ?? 0;
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold text-blue-700">👨‍👩‍👧 Parent Dashboard</h1>
-
-      {/* Section 1: Today's Snapshot */}
-   
-
-      {/* Section 2: Completed Tasks */}
-     
-
-      {/* Section 3: Pending Tasks */}
-     
-
-      {/* Section 4: Past 7 Days Overview */}
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-xl font-semibold text-blue-600 mb-3">📊 Past 7 Days Overview</h2>
-        <table className="w-full text-sm border">
-          <thead className="bg-blue-500 text-white">
-            <tr>
-              <th className="p-2 text-left">Day</th>
-              <th className="p-2 text-left">Tasks</th>
-              <th className="p-2 text-left">Rewards</th>
-              <th className="p-2 text-left">Calories</th>
-            </tr>
-          </thead>
-          <tbody>
-            {weeklyData.map((d, i) => (
-              <tr key={i} className="border-b">
-                <td className="p-2 text-gray-800">{d.day}</td>
-                <td className="p-2 text-gray-800">{d.tasks}</td>
-                <td className="p-2 text-gray-800">{d.rewards}</td>
-                <td className="p-2 text-gray-800">{d.calories} kcal</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="p-6">
+      <div className="mb-4">
+        <h1 className="text-2xl font-semibold text-black">Weekly Summary</h1>
+        <p className="text-sm text-gray-500">
+          {/* {summary?.child?.name ? `Child: ${summary.child.name}` : null} */}
+          {/* {summary?.range?.to ? ` • ${DATA.range.from} → ${DATA.range.to}` : null} */}
+        </p>
       </div>
 
-      {/* Section 5: Reward Management Note */}
-    
+      <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+        <table className="min-w-full border-collapse">
+            <thead className="bg-gray-50">
+              <tr>
+                {/* Keeping Date/Day hidden if you truly want ONLY the three columns,
+                    but they’re useful; remove these two <th>/<td> blocks if not needed */}
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                  Date
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                  Day
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                  Tasks
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                  Balance
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+                  Calories
+                </th>
+              </tr>
+            </thead>
+            {/* <tbody>
+              {summary?.daily?.map((d) => (
+                <tr key={d.date} className="odd:bg-white even:bg-gray-50">
+                  <td className="px-4 py-3 text-sm text-gray-800 text-black">{d.date}</td>
+                  <td className="px-4 py-3 text-sm text-gray-800 text-black">{d.day}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-black">{d.tasks_completed}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-black">{balance}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-black">{d.calories}</td>
+                </tr>
+              ))} */}
+            {/* </tbody> */}
+            <tfoot>
+              <tr className="bg-gray-100">
+                <td className="px-4 py-3 text-sm font-semibold text-gray-700 text-black" colSpan={2}>
+                  Totals
+                </td>
+                <td className="px-4 py-3 text-sm font-semibold text-black">
+                  {/* {summary?.totals?.tasks_completed ?? 0} */}
+                </td>
+                {/* <td className="px-4 py-3 text-sm font-semibold text-black">{balance}</td> */}
+                <td className="px-4 py-3 text-sm font-semibold text-black">
+                  {/* {summary?.totals?.calories ?? 0} */}
+                </td>
+              </tr>
+            </tfoot>
+        </table>
+      </div>
     </div>
   );
 }
+
+// import { cookies } from 'next/headers';
+
+// // ---- Types based on your response shape ----
+// export type DayRow = {
+//   date: string;
+//   day: string;
+//   tasks_completed: number;
+//   rewards: number;
+//   calories: number;
+// };
+
+// export type Points = {
+//   earned_all_time: number;
+//   spent_all_time: number;
+//   balance: number;
+//   earned_this_week: number;
+// };
+
+// export type ChildSummary = {
+//   child: { id: number; name: string };
+//   range: { from_?: string; to: string };
+//   daily: DayRow[];
+//   totals: { tasks_completed: number; rewards: number; calories: number };
+//   points: Points;
+// };
+
+// export type WeeklyData = {
+//   range: { from: string; to: string };
+//   count: number;
+//   summaries: ChildSummary[];
+// };
+
+// async function getWeeklySummary(): Promise<WeeklyData> {
+//   const cookieStore = await cookies(); // ✅ FIX: use await
+//   const token = cookieStore.get('token')?.value ?? '';
+
+//   const res = await fetch('/api/parent/dashboard/children-week-summary', {
+//     method: 'GET',
+//     headers: token ? { Authorization: `Bearer ${token}` } : {},
+//     cache: 'no-store',
+//   });
+
+//   if (!res.ok) {
+//     let msg = `Failed to load weekly summary (${res.status})`;
+//     try {
+//       const j = await res.json();
+//       if (j?.error) msg = j.error;
+//     } catch {}
+//     throw new Error(msg);
+//   }
+
+//   return res.json();
+// }
+
+// export default async function WeeklyTablePage() {
+//   let data: WeeklyData | null = null;
+//   let error: string | null = null;
+
+//   try {
+//     data = await getWeeklySummary();
+//   } catch (e: any) {
+//     error = e?.message || 'Failed to fetch';
+//   }
+
+//   const summary = data?.summaries?.[0];
+//   const balance = summary?.points?.balance ?? 0;
+
+//   return (
+//     <div className="p-6">
+//       <div className="mb-4">
+//         <h1 className="text-2xl font-semibold">Weekly Summary</h1>
+//         {summary ? (
+//           <p className="text-sm text-gray-500">
+//             {summary.child?.name ? `Child: ${summary.child.name}` : null}
+//             {data?.range?.from && data?.range?.to ? ` • ${data.range.from} → ${data.range.to}` : null}
+//           </p>
+//         ) : null}
+//       </div>
+
+//       {error ? (
+//         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+//           {error}
+//         </div>
+//       ) : !summary ? (
+//         <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-gray-700">
+//           No data found.
+//         </div>
+//       ) : (
+//         <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+//           <table className="min-w-full border-collapse">
+//             <thead className="bg-gray-50">
+//               <tr>
+//                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+//                   Date
+//                 </th>
+//                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+//                   Day
+//                 </th>
+//                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+//                   Tasks
+//                 </th>
+//                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+//                   Balance
+//                 </th>
+//                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
+//                   Calories
+//                 </th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {summary.daily?.map((d) => (
+//                 <tr key={d.date} className="odd:bg-white even:bg-gray-50">
+//                   <td className="px-4 py-3 text-sm text-gray-800">{d.date}</td>
+//                   <td className="px-4 py-3 text-sm text-gray-800">{d.day}</td>
+//                   <td className="px-4 py-3 text-sm font-medium">{d.tasks_completed}</td>
+//                   <td className="px-4 py-3 text-sm font-medium">{balance}</td>
+//                   <td className="px-4 py-3 text-sm font-medium">{d.calories}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//             <tfoot>
+//               <tr className="bg-gray-100">
+//                 <td className="px-4 py-3 text-sm font-semibold text-gray-700" colSpan={2}>
+//                   Totals
+//                 </td>
+//                 <td className="px-4 py-3 text-sm font-semibold">
+//                   {summary.totals?.tasks_completed ?? 0}
+//                 </td>
+//                 <td className="px-4 py-3 text-sm font-semibold">{balance}</td>
+//                 <td className="px-4 py-3 text-sm font-semibold">
+//                   {summary.totals?.calories ?? 0}
+//                 </td>
+//               </tr>
+//             </tfoot>
+//           </table>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }

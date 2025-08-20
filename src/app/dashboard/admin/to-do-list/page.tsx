@@ -75,8 +75,10 @@ export default function ToDoMainPage() {
         </span>
       ),
     },
+    { headerName: "Assigned to child", field: "assigned_to_name" },
     { headerName: "Assigned To", field: "assigned_to" },
     { headerName: "Assigned By", field: "assigned_by" },
+    { headerName: "Assigned By parent or Teacher", field: "assigned_by_name" },
   ];
 
   return (

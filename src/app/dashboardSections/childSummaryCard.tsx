@@ -1,227 +1,32 @@
-// // // src/app/dashboard/child/ChildHealthPage.tsx place it to whatever hirarchey u have
-// // 'use client';
 
-// // import { useEffect, useState } from 'react';
-// // import BaseTable from "../components/tables/basetable";
-
-// // type FoodItem = {
-// //   name: string;
-// //   calories: number;
-// // };
-
-// // type ApiFoodLog = {
-// //   id: number;
-// //   quantity: number;
-// //   meal_type: string;
-// //   created_at: string;
-// //   created_at_date?: string;
-// //   created_at_time?: string;
-// //   child: number;
-// //   food_item: {
-// //     id: number;
-// //     name: string;
-// //     calories: number;
-// //     protein: number;
-// //     fat: number;
-// //     carbohydrate: number;
-// //   };
-// // };
-
-// // type HealthSummary = {
-// //   id: string;
-// //   day: string;
-// //   date: string;
-// //   total_fat: number;
-// //   total_protein: number;
-// //   total_carbohydrate: number;
-// //   total_calories: number;
-// //   feedback: 'GOOD' | 'BAD';
-// //   summary?: FoodItem[];
-// // };
-
-// // export default function ChildHealthPage() {
-// //   const [data, setData] = useState<HealthSummary[]>([]);
-// //   const [loading, setLoading] = useState(true);
-// //   const [balance] = useState(300);
-// //   const [motivationIndex, setMotivationIndex] = useState(0);
-
-// //   const motivations = [
-// //     'Consistency is the key to success.',
-// //     'Small steps every day lead to big results.',
-// //     "Stay positive and keep moving forward.",
-// //     "Believe in yourself—you've got this!",
-// //     "Progress, not perfection.",
-// //   ];
-
-// //   const columns = [
-// //     { headerName: 'Day', field: 'day' },
-// //     { headerName: 'Date', field: 'date' },
-// //     { headerName: 'Fat (g)', field: 'total_fat' },
-// //     { headerName: 'Protein (g)', field: 'total_protein' },
-// //     { headerName: 'Carbs (g)', field: 'total_carbohydrate' },
-// //     { headerName: 'Calories', field: 'total_calories' },
-// //     {
-// //       headerName: 'Feedback',
-// //       field: 'feedback',
-// //       cellRenderer: (params: any) => (
-// //         <span className={params.value === 'GOOD' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-// //           {params.value}
-// //         </span>
-// //       ),
-// //     },
-// //   ];
-
-// //   useEffect(() => {
-// //     const interval = setInterval(() => {
-// //       setMotivationIndex((prev) => (prev + 1) % motivations.length);
-// //     }, 4000);
-// //     return () => clearInterval(interval);
-// //   }, []);
-
-// //   useEffect(() => {
-// //     const fetchData = async () => {
-// //       try {
-// //         const token = typeof window !== 'undefined' ? localStorage.getItem('token') || '' : '';
-// //         const res = await fetch('/api/child/dashboard', {
-// //           headers: token ? { Authorization: `Bearer ${token}` } : {},
-// //           cache: 'no-store',
-// //         });
-// //         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-// //         const items: ApiFoodLog[] = await res.json();
-
-// //         // Build today's summary riw
-// //         const todayISO = new Date().toISOString().slice(0, 10);
-// //         const todays = items.filter(
-// //           (i) => (i.created_at_date ?? i.created_at.slice(0, 10)) === todayISO
-// //         );
-
-// //         if (todays.length > 0) {
-// //           const total_fat = todays.reduce(
-// //             (sum, i) => sum + i.food_item.fat * (i.quantity ?? 1),
-// //             0
-// //           );
-// //           const total_protein = todays.reduce(
-// //             (sum, i) => sum + i.food_item.protein * (i.quantity ?? 1),
-// //             0
-// //           );
-// //           const total_carbohydrate = todays.reduce(
-// //             (sum, i) => sum + i.food_item.carbohydrate * (i.quantity ?? 1),
-// //             0
-// //           );
-// //           const total_calories = todays.reduce(
-// //             (sum, i) => sum + i.food_item.calories * (i.quantity ?? 1),
-// //             0
-// //           );
-
-// //           const summary: HealthSummary = {
-// //             id: new Date().toISOString(),
-// //             day: new Date().toLocaleDateString('en-US', { weekday: 'short' }),
-// //             date: todayISO,
-// //             total_fat,
-// //             total_protein,
-// //             total_carbohydrate,
-// //             total_calories,
-// //             feedback: total_calories < 1800 ? 'GOOD' : 'BAD',
-// //             summary: todays.map((i) => ({
-// //               name: i.food_item.name,
-// //               calories: i.food_item.calories * (i.quantity ?? 1),
-// //             })),
-// //           };
-
-// //           setData([summary]);
-// //         } else {
-// //           setData([]);
-// //         }
-// //       } catch (err) {
-// //         console.error('[ChildHealthPage] Fetch error:', err);
-// //         setData([]);
-// //       } finally {
-// //         setLoading(false);
-// //       }
-// //     };
-
-// //     fetchData();
-// //   }, []);
-
-// //   return (
-// //     <div className="p-6 space-y-6">
-// //       {/* Top Summary Cards */}
-// //       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-// //         <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
-// //           <p className="text-sm text-gray-500">Total Balance</p>
-// //           <p className="text-3xl font-bold text-blue-600">{balance}</p>
-// //         </div>
-
-// //         <div className="bg-white rounded-lg shadow p-4 text-center">
-// //           <p className="text-sm text-gray-500">Today's Progress</p>
-// //           <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
-// //             <div
-// //               className="bg-green-500 h-4 rounded-full text-xs text-white text-center"
-// //               style={{ width: '60%' }}
-// //             >
-// //               60%
-// //             </div>
-// //           </div>
-// //         </div>
-
-// //         <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg shadow p-4 text-white text-center transition-all duration-1000">
-// //           <p className="text-sm">⭐ Keep it up!</p>
-// //           <p className="font-semibold mt-1">{motivations[motivationIndex]}</p>
-// //         </div>
-// //       </div>
-
-// //       {/* Table */}
-// //       <div className="bg-white rounded-lg shadow p-4">
-// //         <h2 className="text-lg text-blue-600 font-semibold mb-3">Weekly Health Summary</h2>
-// //         {loading ? (
-// //           <p>Loading...</p>
-// //         ) : (
-// //           <BaseTable
-// //             columns={columns}
-// //             gridOptions={{
-// //               rowData: data,
-// //               localeText: { noRowsToShow: 'No health data found for this child.' },
-// //             }}
-// //           />
-// //         )}
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-
-
-// // src/app/dashboard/child/ChildHealthPage.tsx
 // 'use client';
 
-// import { useEffect, useState } from 'react';
-// import BaseTable from "../components/tables/basetable";
+// import { useEffect, useMemo, useState } from 'react';
+// import dynamic from 'next/dynamic';
 
-// type FoodItem = {
-//   name: string;
-//   calories: number;
+// type BaseTableProps = { columns: any[]; gridOptions?: any };
+// const BaseTable = dynamic<BaseTableProps>(
+//   async () => {
+//     const mod: any = await import('../components/tables/basetable');
+//     return (mod.default ?? mod.BaseTable ?? mod) as React.ComponentType<BaseTableProps>;
+//   },
+//   { ssr: false }
+// );
+
+// type WeeklyRow = { date: string; day: string; fat_g: number; protein_g: number; carbs_g: number; calories: number };
+// type WeeklyResp = { child: number; range: { from: string; to: string }; daily: WeeklyRow[]; totals: any };
+
+// type ProgressResp = {
+//   date: string;
+//   child_id: number | null;
+//   totals: { calories: number; protein_g: number; fat_g: number; carbs_g: number };
+//   goals: { calories: number; protein_g: number; fat_g: number; carbs_g: number };
+//   percent: { calories: number; protein_g: number; fat_g: number; carbs_g: number; meals_logged: number };
+//   meals: { expected: number; logged: number; distinct_meals: string[] };
+//   ui_hint: { zone: 'red' | 'amber' | 'green' };
 // };
 
-// type ApiFoodLog = {
-//   id: number;
-//   quantity: number;
-//   meal_type: string;
-//   created_at: string;
-//   created_at_date?: string;
-//   created_at_time?: string;
-//   child: number;
-//   food_item: {
-//     id: number;
-//     name: string;
-//     calories: number;
-//     protein: number;
-//     fat: number;
-//     carbohydrate: number;
-//   };
-// };
-
-// type HealthSummary = {
+// type TableRow = {
 //   id: string;
 //   day: string;
 //   date: string;
@@ -230,22 +35,115 @@
 //   total_carbohydrate: number;
 //   total_calories: number;
 //   feedback: 'GOOD' | 'BAD';
-//   summary?: FoodItem[];
 // };
 
+// // --- helpers (client-side only)
+// function parseChildOverride(): number | null {
+//   if (typeof window === 'undefined') return null;
+//   const p = new URLSearchParams(window.location.search);
+//   const v = p.get('child') || p.get('id');
+//   return v ? Number(v) : null;
+// }
+
 // export default function ChildHealthPage() {
-//   const [data, setData] = useState<HealthSummary[]>([]);
+//   const [childId, setChildId] = useState<number | null>(null);
+//   const [weekly, setWeekly] = useState<WeeklyResp | null>(null);
+//   const [progress, setProgress] = useState<ProgressResp | null>(null);
 //   const [loading, setLoading] = useState(true);
 //   const [balance] = useState(300);
 //   const [motivationIndex, setMotivationIndex] = useState(0);
+//   const [showDebug, setShowDebug] = useState(false);
+//   const [status, setStatus] = useState<{ weekly?: number; progress?: number }>({});
+//   const [urls, setUrls] = useState<{ weekly?: string; progress?: string }>({});
 
 //   const motivations = [
 //     'Consistency is the key to success.',
 //     'Small steps every day lead to big results.',
-//     "Stay positive and keep moving forward.",
+//     'Stay positive and keep moving forward.',
 //     "Believe in yourself—you've got this!",
-//     "Progress, not perfection.",
+//     'Progress, not perfection.',
 //   ];
+
+//   useEffect(() => {
+//     const t = setInterval(() => setMotivationIndex((i) => (i + 1) % motivations.length), 4000);
+//     return () => clearInterval(t);
+//   }, []);
+
+//   // Fetch via server proxy so cookies/JWT can be read server-side
+//   useEffect(() => {
+//     (async () => {
+//       try {
+//         setLoading(true);
+
+//         const override = parseChildOverride();
+//         const url = override ? `/api/child/dashboard?child=${override}` : `/api/child/dashboard`;
+
+//         const res = await fetch(url, { cache: 'no-store' });
+//         const j = await res.json();
+
+//         // both come from the proxy
+//         setStatus({ weekly: res.status, progress: res.status });
+//         setUrls({ weekly: 'via /api/child/dashboard', progress: 'via /api/child/dashboard' });
+
+//         setChildId(j?.child_id ?? null);
+//         setWeekly(j?.weekly ?? null);
+//         setProgress(j?.progress ?? null);
+//       } catch (e) {
+//         console.error('[ChildDashboard] fetch error', e);
+//         setWeekly(null);
+//         setProgress(null);
+//       } finally {
+//         setLoading(false);
+//       }
+//     })();
+//   }, []);
+
+//   const tableRows: TableRow[] = useMemo(() => {
+//     const daily = weekly?.daily ?? [];
+//     return daily.map((r) => ({
+//       id: r.date,
+//       day: r.day,
+//       date: r.date,
+//       total_fat: r.fat_g,
+//       total_protein: r.protein_g,
+//       total_carbohydrate: r.carbs_g,
+//       total_calories: r.calories,
+//       feedback: r.calories < 1800 ? 'GOOD' : 'BAD',
+//     }));
+//   }, [weekly]);
+
+//   // ✅ fixed progressPercent calculation
+//   const progressPercent = useMemo(() => {
+//     if (!progress) return 0;
+
+//     // Normalize: if API returns 0–1 fractions, convert to 0–100
+//     const normalize = (v: number | undefined | null) =>
+//       !isFinite(Number(v)) ? 0 : (Number(v) <= 1 ? Number(v) * 100 : Number(v));
+
+//     const g = progress.goals || { calories: 0, protein_g: 0, fat_g: 0, carbs_g: 0 };
+//     const allZero =
+//       (g.calories || 0) === 0 &&
+//       (g.protein_g || 0) === 0 &&
+//       (g.fat_g || 0) === 0 &&
+//       (g.carbs_g || 0) === 0;
+
+//     if (allZero) {
+//       // Fallback: use calories vs a default target (change 2000 if you want)
+//       const kcal = progress.totals?.calories || 0;
+//       return Math.min(100, Math.round((kcal / 2000) * 100));
+//     }
+
+//     // Prefer calories % from API (normalized)
+//     const pct = normalize(progress.percent?.calories);
+//     return Math.max(0, Math.min(100, Math.round(pct)));
+//   }, [progress]);
+
+//   const progressColor =
+//     progress?.ui_hint?.zone === 'green'
+//       ? 'bg-green-500'
+//       : progress?.ui_hint?.zone === 'amber'
+//       ? 'bg-yellow-500'
+//       : 'bg-red-500';
 
 //   const columns = [
 //     { headerName: 'Day', field: 'day' },
@@ -257,112 +155,79 @@
 //     {
 //       headerName: 'Feedback',
 //       field: 'feedback',
-//       cellRenderer: (params: any) => (
-//         <span className={params.value === 'GOOD' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-//           {params.value}
+//       cellRenderer: (p: any) => (
+//         <span className={p.value === 'GOOD' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
+//           {p.value}
 //         </span>
 //       ),
 //     },
 //   ];
 
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setMotivationIndex((prev) => (prev + 1) % motivations.length);
-//     }, 4000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         // ⬇️ No Authorization header, no localStorage — cookies are sent automatically
-//         const res = await fetch('/api/child/dashboard', { cache: 'no-store' });
-//         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-//         const items: ApiFoodLog[] = await res.json();
-
-//         // Build today's summary row
-//         const todayISO = new Date().toISOString().slice(0, 10);
-//         const todays = items.filter(
-//           (i) => (i.created_at_date ?? i.created_at.slice(0, 10)) === todayISO
-//         );
-
-//         if (todays.length > 0) {
-//           const total_fat = todays.reduce(
-//             (sum, i) => sum + i.food_item.fat * (i.quantity ?? 1),
-//             0
-//           );
-//           const total_protein = todays.reduce(
-//             (sum, i) => sum + i.food_item.protein * (i.quantity ?? 1),
-//             0
-//           );
-//           const total_carbohydrate = todays.reduce(
-//             (sum, i) => sum + i.food_item.carbohydrate * (i.quantity ?? 1),
-//             0
-//           );
-//           const total_calories = todays.reduce(
-//             (sum, i) => sum + i.food_item.calories * (i.quantity ?? 1),
-//             0
-//           );
-
-//           const summary: HealthSummary = {
-//             id: new Date().toISOString(),
-//             day: new Date().toLocaleDateString('en-US', { weekday: 'short' }),
-//             date: todayISO,
-//             total_fat,
-//             total_protein,
-//             total_carbohydrate,
-//             total_calories,
-//             feedback: total_calories < 1800 ? 'GOOD' : 'BAD',
-//             summary: todays.map((i) => ({
-//               name: i.food_item.name,
-//               calories: i.food_item.calories * (i.quantity ?? 1),
-//             })),
-//           };
-
-//           setData([summary]);
-//         } else {
-//           setData([]);
-//         }
-//       } catch (err) {
-//         console.error('[ChildHealthPage] Fetch error:', err);
-//         setData([]);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
 //   return (
 //     <div className="p-6 space-y-6">
-//       {/* Top Summary Cards */}
+//       {/* header with resolved child id */}
+//       <div className="text-xs text-gray-600">
+//         childId used: <b>{childId ?? 'not found'}</b>
+//         <button className="ml-3 text-blue-600 underline" onClick={() => setShowDebug((s) => !s)}>
+//           {showDebug ? 'Hide debug' : 'Show debug'}
+//         </button>
+//       </div>
+
+//       {showDebug && (
+//         <div className="p-3 mt-2 border rounded bg-gray-50 text-xs space-y-2">
+//           <div>Weekly URL: <code>{urls.weekly}</code></div>
+//           <div>Progress URL: <code>{urls.progress}</code></div>
+//           <div>Status → weekly: <b>{status.weekly ?? '-'}</b> • progress: <b>{status.progress ?? '-'}</b></div>
+//           <details>
+//             <summary>Weekly JSON</summary>
+//             <pre className="whitespace-pre-wrap break-words">{JSON.stringify(weekly, null, 2)}</pre>
+//           </details>
+//           <details>
+//             <summary>Progress JSON</summary>
+//             <pre className="whitespace-pre-wrap break-words">{JSON.stringify(progress, null, 2)}</pre>
+//           </details>
+//           <div className="text-[11px]">
+//             Tip: add <code>?child=15</code> to the URL to test with a specific child id.
+//           </div>
+//         </div>
+//       )}
+
+//       {/* cards */}
 //       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 //         <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
 //           <p className="text-sm text-gray-500">Total Balance</p>
 //           <p className="text-3xl font-bold text-blue-600">{balance}</p>
 //         </div>
 
+//         {/* Progress card */}
 //         <div className="bg-white rounded-lg shadow p-4 text-center">
-//           <p className="text-sm text-gray-500">Today's Progress</p>
+//           <p className="text-sm text-gray-500">
+//             Today's Progress {childId ? <span className="text-gray-400">• Child #{childId}</span> : null}
+//           </p>
 //           <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
 //             <div
-//               className="bg-green-500 h-4 rounded-full text-xs text-white text-center"
-//               style={{ width: '60%' }}
+//               className={`${progressColor} h-4 rounded-full text-xs text-white text-center transition-all`}
+//               style={{ width: `${Math.max(0, Math.min(100, progressPercent))}%` }}
 //             >
-//               60%
+//               {Math.max(0, Math.min(100, progressPercent))}%
 //             </div>
 //           </div>
+//           {progress && (
+//             <div className="mt-2 text-xs text-gray-500">
+//               kcal: {progress.totals.calories} • P:{progress.totals.protein_g}g • F:{progress.totals.fat_g}g • C:{progress.totals.carbs_g}g
+//             </div>
+//           )}
 //         </div>
 
-//         <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg shadow p-4 text-white text-center transition-all duration-1000">
+//         <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg shadow p-4 text-white text-center">
 //           <p className="text-sm">⭐ Keep it up!</p>
-//           <p className="font-semibold mt-1">{motivations[motivationIndex]}</p>
+//           <p className="font-semibold mt-1">
+//             {motivations[motivationIndex]}
+//           </p>
 //         </div>
 //       </div>
 
-//       {/* Table */}
+//       {/* Weekly table */}
 //       <div className="bg-white rounded-lg shadow p-4">
 //         <h2 className="text-lg text-blue-600 font-semibold mb-3">Weekly Health Summary</h2>
 //         {loading ? (
@@ -371,8 +236,8 @@
 //           <BaseTable
 //             columns={columns}
 //             gridOptions={{
-//               rowData: data,
-//               localeText: { noRowsToShow: 'No health data found for this child.' },
+//               rowData: tableRows,
+//               localeText: { noRowsToShow: childId ? 'No health data found for this child.' : 'No child id found.' },
 //             }}
 //           />
 //         )}
@@ -382,50 +247,34 @@
 // }
 
 
-
-// src/app/dashboard/child/ChildHealthPage.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-/** Props your BaseTable expects (keep this minimal to avoid touching basetable.tsx) */
-type BaseTableProps = {
-  columns: any[];
-  gridOptions?: any;
-};
-
-/** Dynamic import that works with default OR named export, + proper typing */
+type BaseTableProps = { columns: any[]; gridOptions?: any };
 const BaseTable = dynamic<BaseTableProps>(
   async () => {
     const mod: any = await import('../components/tables/basetable');
-    const Comp = mod.default ?? mod.BaseTable ?? mod;
-    return (Comp as unknown) as React.ComponentType<BaseTableProps>;
+    return (mod.default ?? mod.BaseTable ?? mod) as React.ComponentType<BaseTableProps>;
   },
   { ssr: false }
 );
 
-type FoodItem = { name: string; calories: number };
+type WeeklyRow = { date: string; day: string; fat_g: number; protein_g: number; carbs_g: number; calories: number };
+type WeeklyResp = { child: number; range: { from: string; to: string }; daily: WeeklyRow[]; totals: any };
 
-type ApiFoodLog = {
-  id: number;
-  quantity: number;
-  meal_type: string;
-  created_at: string;
-  created_at_date?: string;
-  created_at_time?: string;
-  child: number;
-  food_item: {
-    id: number;
-    name: string;
-    calories: number;
-    protein: number;
-    fat: number;
-    carbohydrate: number;
-  };
+type ProgressResp = {
+  date: string;
+  child_id: number | null;
+  totals: { calories: number; protein_g: number; fat_g: number; carbs_g: number };
+  goals: { calories: number; protein_g: number; fat_g: number; carbs_g: number };
+  percent: { calories: number; protein_g: number; fat_g: number; carbs_g: number; meals_logged: number };
+  meals: { expected: number; logged: number; distinct_meals: string[] };
+  ui_hint: { zone: 'red' | 'amber' | 'green' };
 };
 
-type HealthSummary = {
+type TableRow = {
   id: string;
   day: string;
   date: string;
@@ -434,22 +283,158 @@ type HealthSummary = {
   total_carbohydrate: number;
   total_calories: number;
   feedback: 'GOOD' | 'BAD';
-  summary?: FoodItem[];
 };
 
+// --- helpers (client-side only)
+function parseChildOverride(): number | null {
+  if (typeof window === 'undefined') return null;
+  const p = new URLSearchParams(window.location.search);
+  const v = p.get('child') || p.get('id');
+  return v ? Number(v) : null;
+}
+
 export default function ChildHealthPage() {
-  const [data, setData] = useState<HealthSummary[]>([]);
+  const [childId, setChildId] = useState<number | null>(null);
+  const [weekly, setWeekly] = useState<WeeklyResp | null>(null);
+  const [progress, setProgress] = useState<ProgressResp | null>(null);
   const [loading, setLoading] = useState(true);
-  const [balance] = useState(300);
+
+  // ✅ fetched from /api/reward/balance (earned_points)
+  const [totalBalance, setTotalBalance] = useState<number | null>(null);
+  const [balanceStatus, setBalanceStatus] = useState<number | null>(null);
+
   const [motivationIndex, setMotivationIndex] = useState(0);
+  const [showDebug, setShowDebug] = useState(false);
+  const [status, setStatus] = useState<{ weekly?: number; progress?: number }>({});
+  const [urls, setUrls] = useState<{ weekly?: string; progress?: string; balance?: string }>({});
 
   const motivations = [
     'Consistency is the key to success.',
     'Small steps every day lead to big results.',
-    "Stay positive and keep moving forward.",
+    'Stay positive and keep moving forward.',
     "Believe in yourself—you've got this!",
-    "Progress, not perfection.",
+    'Progress, not perfection.',
   ];
+
+  useEffect(() => {
+    const t = setInterval(() => setMotivationIndex((i) => (i + 1) % motivations.length), 4000);
+    return () => clearInterval(t);
+  }, []);
+
+  // Fetch weekly+progress via server proxy so cookies/JWT can be read server-side
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+
+        const override = parseChildOverride();
+        const url = override ? `/api/child/dashboard?child=${override}` : `/api/child/dashboard`;
+
+        const res = await fetch(url, { cache: 'no-store' });
+        const j = await res.json();
+
+        // both come from the proxy
+        setStatus({ weekly: res.status, progress: res.status });
+        setUrls((u) => ({ ...u, weekly: 'via /api/child/dashboard', progress: 'via /api/child/dashboard' }));
+
+        setChildId(j?.child_id ?? null);
+        setWeekly(j?.weekly ?? null);
+        setProgress(j?.progress ?? null);
+      } catch (e) {
+        console.error('[ChildDashboard] fetch error', e);
+        setWeekly(null);
+        setProgress(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  // ✅ Fetch Total Balance (earned_points). If childId is present, filter for that child.
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const qs = childId ? `?child=${childId}` : '';
+        const res = await fetch(`/api/child/rewards/balance${qs}`, { cache: 'no-store' });
+        setBalanceStatus(res.status);
+        setUrls((u) => ({ ...u, balance: `/api/reward/balance${qs || ''}` }));
+
+        const json = await res.json();
+
+        const extractEarned = () => {
+          if (Array.isArray(json)) {
+            const targetId = childId ?? null;
+            if (targetId != null) {
+              const hit = json.find((row: any) => Number(row.user_id) === Number(targetId));
+              if (hit) return Number(hit.earned_points || 0);
+            }
+            return json.length ? Number(json[0]?.earned_points || 0) : 0;
+          }
+          // object response
+          return Number(json?.earned_points || 0);
+        };
+
+        const points = extractEarned();
+        if (!cancelled) setTotalBalance(isFinite(points) ? points : 0);
+      } catch (e) {
+        console.error('[Balance] fetch error', e);
+        if (!cancelled) {
+          setTotalBalance(0);
+          setBalanceStatus(null);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [childId]);
+
+  const tableRows: TableRow[] = useMemo(() => {
+    const daily = weekly?.daily ?? [];
+    return daily.map((r) => ({
+      id: r.date,
+      day: r.day,
+      date: r.date,
+      total_fat: r.fat_g,
+      total_protein: r.protein_g,
+      total_carbohydrate: r.carbs_g,
+      total_calories: r.calories,
+      feedback: r.calories < 1800 ? 'GOOD' : 'BAD',
+    }));
+  }, [weekly]);
+
+  // ✅ progressPercent calculation
+  const progressPercent = useMemo(() => {
+    if (!progress) return 0;
+
+    const normalize = (v: number | undefined | null) =>
+      !isFinite(Number(v)) ? 0 : (Number(v) <= 1 ? Number(v) * 100 : Number(v));
+
+    const g = progress.goals || { calories: 0, protein_g: 0, fat_g: 0, carbs_g: 0 };
+    const allZero =
+      (g.calories || 0) === 0 &&
+      (g.protein_g || 0) === 0 &&
+      (g.fat_g || 0) === 0 &&
+      (g.carbs_g || 0) === 0;
+
+    if (allZero) {
+      const kcal = progress.totals?.calories || 0;
+      return Math.min(100, Math.round((kcal / 2000) * 100));
+    }
+
+    const pct = normalize(progress.percent?.calories);
+    return Math.max(0, Math.min(100, Math.round(pct)));
+  }, [progress]);
+
+  const progressColor =
+    progress?.ui_hint?.zone === 'green'
+      ? 'bg-green-500'
+      : progress?.ui_hint?.zone === 'amber'
+      ? 'bg-yellow-500'
+      : 'bg-red-500';
 
   const columns = [
     { headerName: 'Day', field: 'day' },
@@ -461,105 +446,81 @@ export default function ChildHealthPage() {
     {
       headerName: 'Feedback',
       field: 'feedback',
-      cellRenderer: (params: any) => (
-        <span className={params.value === 'GOOD' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-          {params.value}
+      cellRenderer: (p: any) => (
+        <span className={p.value === 'GOOD' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
+          {p.value}
         </span>
       ),
     },
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMotivationIndex((prev) => (prev + 1) % motivations.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('/api/child/dashboard', { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const items: ApiFoodLog[] = await res.json();
-
-        // last 7 days aggregation (including today)
-        const today = new Date();
-        const start = new Date(today);
-        start.setDate(today.getDate() - 6);
-
-        const byDate: Record<string, ApiFoodLog[]> = {};
-        for (const i of items) {
-          const d = i.created_at_date ?? i.created_at.slice(0, 10);
-          const dateObj = new Date(d + 'T00:00:00');
-          if (dateObj >= new Date(start.toDateString())) {
-            byDate[d] ??= [];
-            byDate[d].push(i);
-          }
-        }
-
-        const summaries: HealthSummary[] = Object.keys(byDate).map((dateKey) => {
-          const logs = byDate[dateKey];
-          const total_fat = logs.reduce((s, i) => s + i.food_item.fat * (i.quantity ?? 1), 0);
-          const total_protein = logs.reduce((s, i) => s + i.food_item.protein * (i.quantity ?? 1), 0);
-          const total_carbohydrate = logs.reduce((s, i) => s + i.food_item.carbohydrate * (i.quantity ?? 1), 0);
-          const total_calories = logs.reduce((s, i) => s + i.food_item.calories * (i.quantity ?? 1), 0);
-          const day = new Date(dateKey).toLocaleDateString('en-US', { weekday: 'short' });
-
-          return {
-            id: dateKey,
-            day,
-            date: dateKey,
-            total_fat,
-            total_protein,
-            total_carbohydrate,
-            total_calories,
-            feedback: total_calories < 1800 ? 'GOOD' : 'BAD',
-            summary: logs.map((i) => ({
-              name: i.food_item.name,
-              calories: i.food_item.calories * (i.quantity ?? 1),
-            })),
-          };
-        });
-
-        summaries.sort((a, b) => (a.date > b.date ? -1 : 1));
-        setData(summaries);
-      } catch (err) {
-        console.error('[ChildHealthPage] Fetch error:', err);
-        setData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <div className="p-6 space-y-6">
-      {/* Top Summary Cards */}
+      {/* header with resolved child id */}
+      <div className="text-xs text-gray-600">
+        childId used: <b>{childId ?? 'not found'}</b>
+        
+      </div>
+
+      {showDebug && (
+        <div className="p-3 mt-2 border rounded bg-gray-50 text-xs space-y-2">
+          <div>Weekly URL: <code>{urls.weekly}</code></div>
+          <div>Progress URL: <code>{urls.progress}</code></div>
+          <div>Balance URL: <code>{urls.balance}</code></div>
+          <div>Status → weekly: <b>{status.weekly ?? '-'}</b> • progress: <b>{status.progress ?? '-'}</b> • balance: <b>{balanceStatus ?? '-'}</b></div>
+          <details>
+            <summary>Weekly JSON</summary>
+            <pre className="whitespace-pre-wrap break-words">{JSON.stringify(weekly, null, 2)}</pre>
+          </details>
+          <details>
+            <summary>Progress JSON</summary>
+            <pre className="whitespace-pre-wrap break-words">{JSON.stringify(progress, null, 2)}</pre>
+          </details>
+          <div className="text-[11px]">
+            Tip: add <code>?child=15</code> to the URL to test with a specific child id.
+          </div>
+        </div>
+      )}
+
+      {/* cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* ✅ Total Balance (earned_points) */}
         <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center text-center">
-          <p className="text-sm text-gray-500">Total Balance</p>
-          <p className="text-3xl font-bold text-blue-600">{balance}</p>
+          <p className="text-sm text-gray-500">Total Balance (Earned Points)</p>
+          <p className="text-3xl font-bold text-blue-600">
+            {totalBalance ?? '—'}
+          </p>
         </div>
 
+        {/* Progress card */}
         <div className="bg-white rounded-lg shadow p-4 text-center">
-          <p className="text-sm text-gray-500">Today's Progress</p>
+          <p className="text-sm text-gray-500">
+            Today's Progress {childId ? <span className="text-gray-400">• Child #{childId}</span> : null}
+          </p>
           <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
-            <div className="bg-green-500 h-4 rounded-full text-xs text-white text-center" style={{ width: '60%' }}>
-              60%
+            <div
+              className={`${progressColor} h-4 rounded-full text-xs text-white text-center transition-all`}
+              style={{ width: `${Math.max(0, Math.min(100, progressPercent))}%` }}
+            >
+              {Math.max(0, Math.min(100, progressPercent))}%
             </div>
           </div>
+          {progress && (
+            <div className="mt-2 text-xs text-gray-500">
+              kcal: {progress.totals.calories} • P:{progress.totals.protein_g}g • F:{progress.totals.fat_g}g • C:{progress.totals.carbs_g}g
+            </div>
+          )}
         </div>
 
         <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg shadow p-4 text-white text-center">
           <p className="text-sm">⭐ Keep it up!</p>
-          <p className="font-semibold mt-1">{motivations[motivationIndex]}</p>
+          <p className="font-semibold mt-1">
+            {motivations[motivationIndex]}
+          </p>
         </div>
       </div>
 
-      {/* Table */}
+      {/* Weekly table */}
       <div className="bg-white rounded-lg shadow p-4">
         <h2 className="text-lg text-blue-600 font-semibold mb-3">Weekly Health Summary</h2>
         {loading ? (
@@ -568,8 +529,8 @@ export default function ChildHealthPage() {
           <BaseTable
             columns={columns}
             gridOptions={{
-              rowData: data,
-              localeText: { noRowsToShow: 'No health data for the last 7 days.' },
+              rowData: tableRows,
+              localeText: { noRowsToShow: childId ? 'No health data found for this child.' : 'No child id found.' },
             }}
           />
         )}

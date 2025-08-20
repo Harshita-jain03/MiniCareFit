@@ -35,7 +35,8 @@ const API_URLS = {
   },
 
   USER: {
-    GET_ME:`${BASE_URL}/users/me/`
+    GET_ALL:`${BASE_URL}/users/users/`,
+    
   },
 
   FOOD_LOGS: {
@@ -50,6 +51,7 @@ const API_URLS = {
     REDEEM: `${BASE_URL}/reward/redemptions/`,
     REDEMPTIONS: `${BASE_URL}/reward/redemptions/`,
     BALANCE: `${BASE_URL}/reward/balance/`,
+    CREATE: `${BASE_URL}/reward/rewards/`,
   },
 
   PARENT_CHILD_MAPPING: {
@@ -58,13 +60,33 @@ const API_URLS = {
   },
   
   USERS : {
-    GET_ALL : `${BASE_URL}/users/users/`
+    GET_ALL : `${BASE_URL}/users/users/`,
+    GET_ONE : (id: number | string) => `${BASE_URL}/users/users/${id}/`,
+    
+  },
+
+  CHILD_DATA :{
+    GET_ALL : `${BASE_URL}/users/studentdata/`,
   },
 
   FOOD_ITEMS : {
     CREATE : `${BASE_URL}/health/food-items/`,
     GET_ALL : `${BASE_URL}/health/food-items/`
-  }
+  },
+
+  REPORTS: {
+    CHILDREN_WEEK_SUMMARY: `${BASE_URL}/users/reports/children-week-summary/`,
+    CHILD_WEEK_SUMMARY: `${BASE_URL}/users/reports/child-week-summary/`,
+    CHILDREN_FOOD_SUMMARY: `${BASE_URL}/users/reports/children-food-summary/`,
+    CHILD_FOOD_SUMMARY: `${BASE_URL}/users/reports/child-food-summary/`,
+  },
+
+  
+  HEALTH: {
+    WEEKLY_SUMMARY: `${BASE_URL}/health/food-logs/summary/weekly/`,
+    PROGRESS_TODAY: `${BASE_URL}/health/progress/today/`,
+  },
+
 
 };
 
