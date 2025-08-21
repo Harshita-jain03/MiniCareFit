@@ -401,9 +401,11 @@
 //   );
 // }
 
+
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function RewardsPage() {
   const [form, setForm] = useState({
@@ -465,8 +467,21 @@ export default function RewardsPage() {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-lg font-semibold text-blue-600 mb-4 text-black">🎁 Create Reward</h2>
+    <div className="bg-white p-6 rounded-xl shadow-md space-y-6">
+      {/* Top bar with title + history button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-blue-600 text-black">
+          🎁 Create Reward
+        </h2>
+        <Link
+          href="/dashboard/parent/reward/history"
+          className="px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-black"
+        >
+          View Reward History
+        </Link>
+      </div>
+
+      {/* Create form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -518,7 +533,7 @@ export default function RewardsPage() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-black transition"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
           Create Reward
         </button>
